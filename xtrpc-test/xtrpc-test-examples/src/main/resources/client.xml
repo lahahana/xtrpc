@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:xt="https://github.com/lahahana/xtrpc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            https://github.com/lahahana/xtrpc xt.xsd">
+    <xt:application name="mockClient" />
+    <xt:registry address="http://localhost:8082" />
+    <xt:reference id="addressService" interface="com.github.lahahana.xtrpc.test.service.AddressService" />
+</beans>
