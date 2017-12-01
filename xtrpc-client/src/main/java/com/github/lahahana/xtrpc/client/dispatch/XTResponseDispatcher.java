@@ -40,13 +40,11 @@ public class XTResponseDispatcher {
     }
 
     public Object register(XTRequest request, XTResponseAware responseAware) {
-//        Map<Long, XTResponseAware> registeredXTResponseAware = registeredXTResponseAwareTL.get();
         registeredXTResponseAware.put(request.getRequestId(), responseAware);
         return responseAware;
     }
 
     public void dispatch(XTResponse response) {
-//        Map<Long, XTResponseAware> registeredXTResponseAware = registeredXTResponseAwareTL.get();
         XTResponseAware responseAware = registeredXTResponseAware.remove(response.getRequestId());
         responseAware.setResponse(response);
         synchronized (responseAware) {

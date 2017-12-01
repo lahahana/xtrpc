@@ -27,7 +27,7 @@ public class ClientMock {
     public static void main(String[] args) {
 //        User user = new User(0, "Leon", 20);
 //        testExecutors.execute(new UserTask());
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             testExecutors.execute(new AddressTask());
         }
 

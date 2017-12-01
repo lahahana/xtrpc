@@ -1,9 +1,8 @@
-package com.github.lahahana.xtrpc.server.codec;
+package com.github.lahahana.xtrpc.client.handler.codec;
 
-import com.github.lahahana.xtrpc.common.codec.CodecUtil;
 import com.github.lahahana.xtrpc.common.codec.CodecUtilFactory;
+import com.github.lahahana.xtrpc.common.codec.CodecUtil;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import org.slf4j.Logger;
@@ -11,9 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class XTRequestDecoder extends ByteToMessageDecoder {
+public class XTResponseDecoder extends ByteToMessageDecoder {
 
-    private static final Logger logger = LoggerFactory.getLogger(XTRequestDecoder.class);
+    private static final Logger logger = LoggerFactory.getLogger(XTResponseDecoder.class);
 
     private static CodecUtil codecUtil = CodecUtilFactory.getCodecUtil();
 
@@ -26,7 +25,7 @@ public class XTRequestDecoder extends ByteToMessageDecoder {
         in.markReaderIndex();
         int dataLength = in.readInt();
 
-        //wait for full-message
+        //message not complete
         if(in.readableBytes() < dataLength) {
             in.resetReaderIndex();
             return;

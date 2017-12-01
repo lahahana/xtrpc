@@ -21,14 +21,14 @@ public class XTServerInboundPortalHandler extends SimpleChannelInboundHandler<XT
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-        logger.info("client registered: socket address={} ", ctx.channel().remoteAddress());
+        logger.info("channel registered: socket address={} ", ctx.channel().remoteAddress());
         channelHandlerCtxHolder.registerChannel(ctx);
         super.channelRegistered(ctx);
     }
 
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-        logger.info("client unregistered: socket address={} ", ctx.channel().remoteAddress());
+        logger.info("channel unregistered: socket address={} ", ctx.channel().remoteAddress());
         removeChannelHandlerCtx(ctx);
         super.channelUnregistered(ctx);
     }
@@ -38,7 +38,7 @@ public class XTServerInboundPortalHandler extends SimpleChannelInboundHandler<XT
         String clientHost = null;
         try {
             clientHost = ctx.channel().remoteAddress().toString();
-            logger.info("receive request: host={}, request={}", clientHost, msg);
+            logger.debug("receive request: srcHost={}, request={}", clientHost, msg);
             //dispatch request to local function in async
             dispatcher.dispatch(ctx.channel(), msg);
         } catch (Exception e) {
@@ -51,7 +51,7 @@ public class XTServerInboundPortalHandler extends SimpleChannelInboundHandler<XT
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.error("exception caught:", cause);
+        logger.error("exception caught:", cause.getMessage());
     }
 
     private void removeChannelHandlerCtx(ChannelHandlerContext ctx) {

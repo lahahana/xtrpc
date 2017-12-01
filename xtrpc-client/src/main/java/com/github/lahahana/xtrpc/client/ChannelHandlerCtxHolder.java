@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ChannelHandlerCtxHolder {
 
@@ -40,9 +42,9 @@ public class ChannelHandlerCtxHolder {
             List<ChannelHandlerContext> channelsOfInterface = channelHandlerCtxCache.get(interfaceClazz);
             if(channelsOfInterface == null) {
                 channelsOfInterface = new ArrayList();
+                channelsOfInterface.add(ctx);
                 channelHandlerCtxCache.put(interfaceClazz, channelsOfInterface);
             }
-            channelsOfInterface.add(ctx);
         } finally {
             writeLock.unlock();
         }
@@ -52,6 +54,15 @@ public class ChannelHandlerCtxHolder {
         try {
             readLock.lock();
             return channelHandlerCtxCache.get(interfaceClazz);
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    public List<ChannelHandlerContext> listChannelHandlerContexts() {
+        try {
+            readLock.lock();
+            return channelHandlerCtxCache.values().stream().flatMap((x) -> x.stream()).collect(Collectors.toList());
         } finally {
             readLock.unlock();
         }
@@ -77,6 +88,10 @@ public class ChannelHandlerCtxHolder {
         } finally {
             writeLock.unlock();
         }
+    }
+
+    public void removeChannelHandlerContext(ChannelHandlerContext ctx) {
+        //TO-DO
     }
 
 }

@@ -6,8 +6,6 @@ import java.io.*;
 
 public class JavaCodecUtil implements CodecUtil {
 
-    private static final byte HEAD_LENGTH = 4;
-
     @Override
     public void encode(ByteBuf byteBuf, Object msg) throws IOException {
         try(ByteArrayOutputStream outputStream = new ByteArrayOutputStream(); ObjectOutputStream oos = new ObjectOutputStream(outputStream)) {
@@ -27,10 +25,5 @@ public class JavaCodecUtil implements CodecUtil {
         } catch (ClassNotFoundException e) {
             throw new IOException("class not found exception", e);
         }
-    }
-
-    @Override
-    public int getByteNumOfDataLengthMark() {
-        return HEAD_LENGTH;
     }
 }

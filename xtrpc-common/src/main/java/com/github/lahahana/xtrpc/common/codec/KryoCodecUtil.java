@@ -13,8 +13,6 @@ import java.io.IOException;
 
 public class KryoCodecUtil implements CodecUtil {
 
-    private static final byte HEAD_LENGTH = 4;
-
     private static KryoPool pool = KryoPoolFactory.getInstance().getKryoPool();
 
     @Override
@@ -42,10 +40,5 @@ public class KryoCodecUtil implements CodecUtil {
         input.close();
         pool.release(kryo);
         return object;
-    }
-
-    @Override
-    public int getByteNumOfDataLengthMark() {
-        return HEAD_LENGTH;
     }
 }

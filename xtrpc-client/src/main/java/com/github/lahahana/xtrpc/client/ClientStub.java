@@ -1,7 +1,8 @@
 package com.github.lahahana.xtrpc.client;
 
-import com.github.lahahana.xtrpc.client.codec.XTRequestEncoder;
-import com.github.lahahana.xtrpc.client.codec.XTResponseDecoder;
+import com.github.lahahana.xtrpc.client.handler.codec.HeartBeatOutboundHandler;
+import com.github.lahahana.xtrpc.client.handler.codec.XTRequestEncoder;
+import com.github.lahahana.xtrpc.client.handler.codec.XTResponseDecoder;
 import com.github.lahahana.xtrpc.client.dispatch.XTResponseDispatcher;
 import com.github.lahahana.xtrpc.client.handler.XTClientInboundPortalHandler;
 import com.github.lahahana.xtrpc.client.handler.XTClientOutboundPortalHandler;
@@ -12,8 +13,10 @@ import com.github.lahahana.xtrpc.common.domain.XTRequest;
 import com.github.lahahana.xtrpc.common.domain.XTResponse;
 import com.github.lahahana.xtrpc.common.domain.XTResponseAware;
 import com.github.lahahana.xtrpc.common.exception.InvokeTimeoutException;
+import com.github.lahahana.xtrpc.common.exception.RejectInvokeException;
 import com.github.lahahana.xtrpc.common.exception.ServiceNotAvailableException;
 import com.github.lahahana.xtrpc.common.exception.ServiceNotFoundException;
+import com.github.lahahana.xtrpc.common.threadfactory.CustomThreadFactory;
 import com.github.lahahana.xtrpc.common.util.Tuple;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
@@ -30,6 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ClientStub {
 
@@ -49,17 +53,17 @@ public class ClientStub {
 
     private Map<String, Tuple<Lock, Boolean>> initializationLockMap = new ConcurrentHashMap<>();//true means connection established
 
-//    private ThreadLocal<AtomicLong> requestIdCounterTL = new ThreadLocal<AtomicLong>(){
-//        @Override
-//        protected AtomicLong initialValue() {
-//            return new AtomicLong();
-//        }
-//    };
-
     private AtomicLong requestIdCounter = new AtomicLong();
+
+    private volatile boolean online = true;
+
+    private ReentrantReadWriteLock globalLock = new ReentrantReadWriteLock();
+
+    private ScheduledHeartBeatInvoker scheduledHeartBeatInvoker = new ScheduledHeartBeatInvoker();
 
 
     private ClientStub() {
+        scheduledHeartBeatInvoker.start();
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             shutdownAll();
         }));
@@ -76,7 +80,8 @@ public class ClientStub {
         return instance;
     }
 
-    public void start(Service service) {
+    public void buildChannelForService(Service service) {
+        logger.debug("start to establish connection: service={}", service);
         Tuple<Lock, Boolean> lockStateTuple = new Tuple<>(new ReentrantLock(), false);
         Tuple<Lock, Boolean> lockStateTuple0 = initializationLockMap.putIfAbsent(service.getUniqueKey(), lockStateTuple);
         if (lockStateTuple0 == null) {
@@ -86,10 +91,11 @@ public class ClientStub {
         try {
             lock.lock();
             if (lockStateTuple0.getV()) {
-                logger.info("Connection for already established by others, service={} , skip event loop group bootstrap", service);
+                logger.debug("Connection already established by others, service={} , skip event loop group bootstrap", service);
                 return;
             }
-            EventLoopGroup workerEventGroup = new NioEventLoopGroup();
+            String threadFactoryName = service.getUniqueKey();
+            EventLoopGroup workerEventGroup = new NioEventLoopGroup(5, new CustomThreadFactory(threadFactoryName));
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(workerEventGroup)
                     .channel(NioSocketChannel.class)
@@ -105,8 +111,10 @@ public class ClientStub {
                         protected void initChannel(Channel ch) throws Exception {
                             ch.pipeline().addLast(new XTResponseDecoder())
                                     .addLast(new XTClientInboundPortalHandler(service.getInterfaceClazz()))
+                                    .addLast(new HeartBeatOutboundHandler())
                                     .addLast(new XTRequestEncoder())
-                                    .addLast(new XTClientOutboundPortalHandler());
+                                    .addLast(new XTClientOutboundPortalHandler(service.getInterfaceClazz()))
+                                    ;
                         }
                     });
             bootstrap.connect(service.getHost(), service.getPort()).sync();
@@ -129,7 +137,7 @@ public class ClientStub {
 
     }
 
-    public void shutdown(Service service) {
+    public void shutdownChannelForService(Service service) {
         if (eventLoopGroupMap != null) {
             eventLoopGroupMap.get(service.getInterfaceClazz()).stream().forEach((elg) -> elg.shutdownGracefully());
         }
@@ -137,6 +145,7 @@ public class ClientStub {
     }
 
     public void shutdownAll() {
+        online = false;
         if (eventLoopGroupMap != null) {
             eventLoopGroupMap.values().stream()
                     .flatMap((x) -> x.stream()).forEach((elg) -> elg.shutdownGracefully());
@@ -145,6 +154,9 @@ public class ClientStub {
     }
 
     public Object invoke(Object obj, Method method, Object[] args) throws Exception {
+        if (!online) {
+            throw new RejectInvokeException("client stub offline");
+        }
         XTRequest xtRequest = buildXTRequest(method, args);
 
         //firstly check whether connection of service initialized or not, get channel by service from channel holder
@@ -157,11 +169,12 @@ public class ClientStub {
                 //TO-DO add LoadBalance solution support
                 selectedService = loadBalancer.selectService(services);
                 //start init connection to remote server in block way
-                start(selectedService);
+                buildChannelForService(selectedService);
             } catch (ServiceNotFoundException e) {
                 logger.error("service={}", selectedService.getInterfaceClazz());
             } catch (ServiceNotAvailableException e2) {
                 logger.error("service={}", selectedService);
+                throw e2;
             }
 
             channelHandlerCtxListOfInterface = channelHandlerCtxHolder.listChannelHandlerContextsOfInterface(selectedService.getInterfaceClazz());

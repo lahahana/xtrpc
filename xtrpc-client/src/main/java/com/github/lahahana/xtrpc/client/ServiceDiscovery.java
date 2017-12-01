@@ -3,6 +3,7 @@ package com.github.lahahana.xtrpc.client;
 import com.github.lahahana.xtrpc.common.domain.Service;
 import com.github.lahahana.xtrpc.common.exception.ServiceNotFoundException;
 import com.github.lahahana.xtrpc.common.util.Mock;
+import com.github.lahahana.xtrpc.common.util.NetworkUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ public class ServiceDiscovery {
     private Map<String, List<Service>> serviceMap = new ConcurrentHashMap<>();
 
     public ServiceDiscovery() {
-        Service service = new Service("com.github.lahahana.xtrpc.test.service.AddressService", "192.168.0.103", 8088);
+        Service service = new Service("com.github.lahahana.xtrpc.test.service.AddressService", NetworkUtil.getLocalHostInetAddress().getHostAddress(), 8088);
         List<Service> services = new ArrayList<>();
         services.add(service);
         serviceMap.put(service.getInterfaceClazz(), services);

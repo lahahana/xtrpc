@@ -1,10 +1,11 @@
 package com.github.lahahana.xtrpc.server;
 
 import com.github.lahahana.xtrpc.common.exception.StubInitializeException;
+import com.github.lahahana.xtrpc.common.threadfactory.CustomThreadFactory;
 import com.github.lahahana.xtrpc.common.util.Mock;
 import com.github.lahahana.xtrpc.common.util.NetworkUtil;
-import com.github.lahahana.xtrpc.server.codec.XTRequestDecoder;
-import com.github.lahahana.xtrpc.server.codec.XTResponseEncoder;
+import com.github.lahahana.xtrpc.server.handler.codec.XTRequestDecoder;
+import com.github.lahahana.xtrpc.server.handler.codec.XTResponseEncoder;
 import com.github.lahahana.xtrpc.server.handler.XTServerInboundPortalHandler;
 import com.github.lahahana.xtrpc.server.handler.XTServerOutboundPortalHandler;
 import io.netty.bootstrap.ServerBootstrap;
@@ -13,8 +14,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.Future;
 
 public class ServerStub {
 
@@ -39,8 +38,8 @@ public class ServerStub {
     }
 
     public void start() throws StubInitializeException {
-        bossEventGroup = new NioEventLoopGroup();
-        workerEventGroup = new NioEventLoopGroup();
+        bossEventGroup = new NioEventLoopGroup(1, new CustomThreadFactory("bossNettyIOThread"));
+        workerEventGroup = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors() * 2 + 1, new CustomThreadFactory("workerNettyIOThread"));
 
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.group(bossEventGroup, workerEventGroup)

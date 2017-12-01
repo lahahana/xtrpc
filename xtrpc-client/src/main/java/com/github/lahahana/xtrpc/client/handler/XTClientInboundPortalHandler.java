@@ -48,4 +48,10 @@ public class XTClientInboundPortalHandler extends SimpleChannelInboundHandler<XT
         logger.debug("receive response: response={}", msg);
         responseDispatcher.dispatch(msg);
     }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        logger.error("Exception:", cause);
+        channelHandlerCtxHolder.removeChannelHandlerContext(interfaceClazz, ctx);
+    }
 }
