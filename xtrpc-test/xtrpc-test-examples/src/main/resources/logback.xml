@@ -54,10 +54,6 @@
         </encoder>
     </appender>
 
-    <logger name="log.sync" level="DEBUG" addtivity="true">
-        <appender-ref ref="SYNC_FILE" />
-    </logger>
-
     <logger name="ch.qos.logback" level="OFF"/>
     <logger name="io.netty" level="INFO"/>
 

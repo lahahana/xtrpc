@@ -11,9 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ChannelHandler.Sharable
-public class XTServerInboundPortalHandler extends SimpleChannelInboundHandler<XTRequest> {
+public class XTRequestInboundHandler extends SimpleChannelInboundHandler<XTRequest> {
 
-    private static final Logger logger = LoggerFactory.getLogger(XTServerInboundPortalHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(XTRequestInboundHandler.class);
 
     private static ChannelHandlerCtxHolder channelHandlerCtxHolder = ChannelHandlerCtxHolder.getInstance();
 
@@ -35,14 +35,13 @@ public class XTServerInboundPortalHandler extends SimpleChannelInboundHandler<XT
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, XTRequest msg) throws Exception {
-        String clientHost = null;
         try {
-            clientHost = ctx.channel().remoteAddress().toString();
-            logger.debug("receive request: srcHost={}, request={}", clientHost, msg);
+            String clientHost = ctx.channel().remoteAddress().toString();
+            logger.debug("receive request: srcHost={}, XTRequest={}", clientHost, msg);
             //dispatch request to local function in async
             dispatcher.dispatch(ctx.channel(), msg);
         } catch (Exception e) {
-            logger.error("fail to dispatch request: request={}", msg, e);
+            logger.error("fail to dispatch request: XTRequest={}", msg, e);
         } finally {
             removeChannelHandlerCtx(ctx);
         }
@@ -51,7 +50,7 @@ public class XTServerInboundPortalHandler extends SimpleChannelInboundHandler<XT
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.error("exception caught:", cause.getMessage());
+        logger.error("exception caught:", cause);
     }
 
     private void removeChannelHandlerCtx(ChannelHandlerContext ctx) {

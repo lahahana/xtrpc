@@ -3,6 +3,8 @@ package com.github.lahahana.xtrpc.common.serialization;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.pool.KryoFactory;
 import com.esotericsoftware.kryo.pool.KryoPool;
+import com.github.lahahana.xtrpc.common.domain.FunctionRequest;
+import com.github.lahahana.xtrpc.common.domain.FunctionResponse;
 import com.github.lahahana.xtrpc.common.domain.XTRequest;
 import com.github.lahahana.xtrpc.common.domain.XTResponse;
 
@@ -16,6 +18,8 @@ public class KryoPoolFactory {
             Kryo kryo = new Kryo();
             kryo.register(XTRequest.class);
             kryo.register(XTResponse.class);
+            kryo.register(FunctionRequest.class);
+            kryo.register(FunctionResponse.class);
             return kryo;
         }
     };

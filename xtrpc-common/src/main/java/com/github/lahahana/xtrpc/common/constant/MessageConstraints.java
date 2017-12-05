@@ -4,6 +4,11 @@ public class MessageConstraints {
 
     public static final byte XTREQUEST_HEAD = 1;
 
-    public static final byte HEART_BEAT_HEAD = 2;
+    public static final byte XTRESPONSE_HEAD = 2;
 
+    public static final byte FUNCTION_REQUEST_HEAD = 3;
+
+    public static final byte FUNCTION_RESPONSE_HEAD = 4;
+
+    public static final byte FUNCTION_HEART_BEAT_HEAD = 5;
 }

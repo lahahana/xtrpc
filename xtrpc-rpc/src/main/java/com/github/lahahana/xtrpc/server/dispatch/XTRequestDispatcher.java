@@ -1,6 +1,7 @@
 package com.github.lahahana.xtrpc.server.dispatch;
 
 import com.github.lahahana.xtrpc.common.constant.Constraints;
+import com.github.lahahana.xtrpc.common.constant.MessageConstraints;
 import com.github.lahahana.xtrpc.common.domain.XTRequest;
 import com.github.lahahana.xtrpc.common.domain.XTResponse;
 import com.github.lahahana.xtrpc.common.exception.ServiceNotFoundException;
@@ -36,16 +37,16 @@ public class XTRequestDispatcher implements RequestDispatcher {
         Object targetService = mockServiceFromSpringContext.get(interfaceClazz);
         Method targetMethod;
         Future future = null;
-        XTResponse xtResponse = new XTResponse();
-        xtResponse.setRequestId(xtRequest.getRequestId());
+        XTResponse xtResponse = new XTResponse(xtRequest.getRequestId());
         try {
             targetMethod = targetService.getClass().getMethod(method, argsType);
             future = xtRequestExecutor.submit(() -> {
                             try {
                                 Object result = targetMethod.invoke(targetService, args);
-                                logger.info("server side result:{}", result);
+                                logger.info("execution result:{}", result);
                                 xtResponse.setStatusCode(Constraints.STATUS_OK);
                                 xtResponse.setResult(result);
+                                channel.write(MessageConstraints.XTRESPONSE_HEAD);
                                 channel.writeAndFlush(xtResponse);
                             } catch (IllegalAccessException | InvocationTargetException e) {
                                 logger.error("service:{}.{} invocation fail", interfaceClazz, method);

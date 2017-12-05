@@ -91,7 +91,20 @@ public class ChannelHandlerCtxHolder {
     }
 
     public void removeChannelHandlerContext(ChannelHandlerContext ctx) {
-        //TO-DO
+        try {
+            writeLock.lock();
+            List<ChannelHandlerContext> contexts = channelHandlerCtxCache.values().stream().flatMap((x) -> x.stream()).collect(Collectors.toList());
+            Iterator<ChannelHandlerContext> iter = contexts.iterator();
+
+            for (;iter.hasNext();) {
+                ChannelHandlerContext octx = iter.next();
+                if(octx.channel().id().equals(octx.channel().id())) {
+                    iter.remove();
+                }
+            }
+        } finally {
+            writeLock.unlock();
+        }
     }
 
 }

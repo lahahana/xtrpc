@@ -1,6 +1,7 @@
 package com.github.lahahana.xtrpc.client;
 
 import com.github.lahahana.xtrpc.common.constant.MessageConstraints;
+import com.github.lahahana.xtrpc.common.domain.FunctionRequest;
 import com.github.lahahana.xtrpc.common.threadfactory.CustomThreadFactory;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -18,7 +19,7 @@ public class ScheduledHeartBeatInvoker extends TimerTask {
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduledHeartBeatInvoker.class);
 
-    private static final long HEART_BEAT_INTERVAL = 5000L;
+    private static final long HEART_BEAT_INTERVAL = 30000L;
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(3, new CustomThreadFactory("HeartBeatThread"));
 
@@ -38,9 +39,9 @@ public class ScheduledHeartBeatInvoker extends TimerTask {
 
     @Override
     public void run() {
-            logger.debug("heart beat task scheduled");
-            List<ChannelHandlerContext> contexts = ctxHolder.listChannelHandlerContexts();
-            contexts.stream().forEach((ctx) -> {
+        List<ChannelHandlerContext> contexts = ctxHolder.listChannelHandlerContexts();
+        logger.debug("heart beat tasks scheduled, size:{}", contexts.size());
+        contexts.stream().forEach((ctx) -> {
                 executorService.submit(new HeartBeatTask(ctx.channel()));
             });
         }
@@ -61,7 +62,8 @@ public class ScheduledHeartBeatInvoker extends TimerTask {
         private void sendHeartBeat() {
             logger.debug("send heart beat on channel: {}", channel);
             if(channel.isWritable()) {
-                ChannelFuture future = channel.writeAndFlush(MessageConstraints.HEART_BEAT_HEAD);
+                FunctionRequest functionRequest = new FunctionRequest(MessageConstraints.FUNCTION_REQUEST_HEAD);
+                ChannelFuture future = channel.writeAndFlush(functionRequest);
                 future.syncUninterruptibly();
             }
         }

@@ -4,10 +4,12 @@ import com.github.lahahana.xtrpc.common.exception.StubInitializeException;
 import com.github.lahahana.xtrpc.common.threadfactory.CustomThreadFactory;
 import com.github.lahahana.xtrpc.common.util.Mock;
 import com.github.lahahana.xtrpc.common.util.NetworkUtil;
-import com.github.lahahana.xtrpc.server.handler.codec.XTRequestDecoder;
-import com.github.lahahana.xtrpc.server.handler.codec.XTResponseEncoder;
-import com.github.lahahana.xtrpc.server.handler.XTServerInboundPortalHandler;
+import com.github.lahahana.xtrpc.server.handler.FunctionRequestInboundHandler;
+import com.github.lahahana.xtrpc.server.handler.XTRequestInboundHandler;
 import com.github.lahahana.xtrpc.server.handler.XTServerOutboundPortalHandler;
+import com.github.lahahana.xtrpc.server.handler.codec.FunctionResponseEncoder;
+import com.github.lahahana.xtrpc.server.handler.codec.RequestDecoder;
+import com.github.lahahana.xtrpc.server.handler.codec.XTResponseEncoder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -27,7 +29,7 @@ public class ServerStub {
 
     private int inetPort = 8088;
 
-    XTServerInboundPortalHandler xtServerInboundPortalHandler = new XTServerInboundPortalHandler();
+    XTRequestInboundHandler xtRequestInboundHandler = new XTRequestInboundHandler();
 
     public ServerStub() {
     }
@@ -51,10 +53,12 @@ public class ServerStub {
                 .childHandler(new ChannelInitializer<Channel>() {
                     @Override
                     protected void initChannel(Channel ch) throws Exception {
-                        ch.pipeline().addLast(new XTRequestDecoder())
-                                .addLast(xtServerInboundPortalHandler)
-                                .addLast(new XTServerOutboundPortalHandler())
-                                .addLast(new XTResponseEncoder());
+                        ch.pipeline().addLast(new RequestDecoder())
+                                .addLast(xtRequestInboundHandler)
+                                .addLast(new FunctionRequestInboundHandler())
+                                .addLast(new FunctionResponseEncoder())
+                                .addLast(new XTResponseEncoder())
+                                .addLast(new XTServerOutboundPortalHandler());
                     }
                 });
         try {
@@ -74,6 +78,6 @@ public class ServerStub {
 
     @Mock
     public void addMockService(String serviceName, Object object) {
-        xtServerInboundPortalHandler.addMockService(serviceName, object);
+        xtRequestInboundHandler.addMockService(serviceName, object);
     }
 }

@@ -1,10 +1,11 @@
 package com.github.lahahana.xtrpc.client;
 
-import com.github.lahahana.xtrpc.client.handler.codec.HeartBeatOutboundHandler;
+import com.github.lahahana.xtrpc.client.handler.FunctionResponseInboundHandler;
+import com.github.lahahana.xtrpc.client.handler.codec.FunctionRequestEncoder;
 import com.github.lahahana.xtrpc.client.handler.codec.XTRequestEncoder;
-import com.github.lahahana.xtrpc.client.handler.codec.XTResponseDecoder;
+import com.github.lahahana.xtrpc.client.handler.codec.ResponseDecoder;
 import com.github.lahahana.xtrpc.client.dispatch.XTResponseDispatcher;
-import com.github.lahahana.xtrpc.client.handler.XTClientInboundPortalHandler;
+import com.github.lahahana.xtrpc.client.handler.XTResponseInboundHandler;
 import com.github.lahahana.xtrpc.client.handler.XTClientOutboundPortalHandler;
 import com.github.lahahana.xtrpc.client.lb.LoadBalancer;
 import com.github.lahahana.xtrpc.client.lb.RandomLoadBalancer;
@@ -109,12 +110,14 @@ public class ClientStub {
                     .handler(new ChannelInitializer<Channel>() {
                         @Override
                         protected void initChannel(Channel ch) throws Exception {
-                            ch.pipeline().addLast(new XTResponseDecoder())
-                                    .addLast(new XTClientInboundPortalHandler(service.getInterfaceClazz()))
-                                    .addLast(new HeartBeatOutboundHandler())
+                            ch.pipeline().addLast(new ResponseDecoder())
+                                    .addLast(new XTResponseInboundHandler(service.getInterfaceClazz()))
+                                    .addLast(new FunctionResponseInboundHandler())
+//                                    .addLast(new HeartBeatOutboundHandler())
+                                    .addLast(new FunctionRequestEncoder())
                                     .addLast(new XTRequestEncoder())
                                     .addLast(new XTClientOutboundPortalHandler(service.getInterfaceClazz()))
-                                    ;
+                            ;
                         }
                     });
             bootstrap.connect(service.getHost(), service.getPort()).sync();
@@ -186,14 +189,20 @@ public class ClientStub {
         XTResponseAware responseAware = new XTResponseAware(xtRequest.getRequestId());
         Object lock = responseDispatcher.register(xtRequest, responseAware);
         ChannelFuture channelFuture = channel.writeAndFlush(xtRequest);
-        //fail-over retry
 
         Object result = null;
         try {
             synchronized (lock) {
+                logger.debug("wait for result of XTRequest:{}", xtRequest);
                 lock.wait(xtRequest.getTimeout());
                 XTResponse xtResponse = responseAware.getResponse();
-                result = xtResponse.getResult();
+                if(xtResponse != null) {
+                    result = xtResponse.getResult();
+                }else {
+                    //fail-over retry
+                    logger.error("{}",xtResponse);
+                    throw new InvokeTimeoutException("No response received from server side");
+                }
             }
         } catch (InterruptedException e) {
             throw new InvokeTimeoutException(e);
@@ -209,12 +218,11 @@ public class ClientStub {
         Class<?>[] argsType = method.getParameterTypes();
 
         long requestId = requestIdCounter.getAndIncrement();
-        XTRequest xtRequest = new XTRequest();
-        xtRequest.setRequestId(requestId);
+        XTRequest xtRequest = new XTRequest(requestId);
         xtRequest.setInterfaceClazz(clazz.getName());
         xtRequest.setMethod(methodName);
         xtRequest.setArgsType(argsType);
-        xtRequest.setTimeout(10000l);
+        xtRequest.setTimeout(2000l);
         xtRequest.setArgs(args);
         return xtRequest;
     }

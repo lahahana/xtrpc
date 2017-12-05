@@ -2,6 +2,7 @@ package com.github.lahahana.xtrpc.client.handler.codec;
 
 import com.github.lahahana.xtrpc.common.codec.CodecUtilFactory;
 import com.github.lahahana.xtrpc.common.codec.CodecUtil;
+import com.github.lahahana.xtrpc.common.constant.MessageConstraints;
 import com.github.lahahana.xtrpc.common.domain.XTRequest;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -18,6 +19,9 @@ public class XTRequestEncoder extends MessageToByteEncoder<XTRequest> {
     @Override
     protected void encode(ChannelHandlerContext ctx, XTRequest msg, ByteBuf out) throws Exception {
         logger.debug("prepare encode:{}", msg.toString());
+        if(out.isWritable()) {
+            out.writeByte(MessageConstraints.XTREQUEST_HEAD);
+        }
         codecUtil.encode(out, msg);
     }
 }

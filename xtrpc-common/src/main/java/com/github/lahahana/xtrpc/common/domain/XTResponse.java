@@ -2,11 +2,13 @@ package com.github.lahahana.xtrpc.common.domain;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
 
 @Data
+@NoArgsConstructor
 public class XTResponse implements Serializable {
 
     private long requestId;
@@ -17,4 +19,7 @@ public class XTResponse implements Serializable {
 
     private Throwable throwable;
 
+    public XTResponse(long requestId) {
+        this.requestId = requestId;
+    }
 }

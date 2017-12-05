@@ -24,7 +24,7 @@ public class XTClientOutboundPortalHandler extends ChannelOutboundHandlerAdapter
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         String serverAddress = ctx.channel().remoteAddress().toString();
-        logger.debug("send request -> host={}, request={}", serverAddress, msg);
+        logger.debug("start send request -> host={}, request={}", serverAddress, msg);
         super.write(ctx, msg, promise);
     }
 

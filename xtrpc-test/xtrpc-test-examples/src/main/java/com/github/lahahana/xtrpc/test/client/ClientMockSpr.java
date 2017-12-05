@@ -26,7 +26,7 @@ public class ClientMockSpr {
 //        User user = new User(0, "Leon", 20);
         testExecutors.execute(new ClientMock.UserTask());
         for (int i = 0; i < 10; i++) {
-            testExecutors.execute(new ClientMock.AddressTask());
+            testExecutors.submit(new ClientMock.AddressTask());
         }
 
     }
