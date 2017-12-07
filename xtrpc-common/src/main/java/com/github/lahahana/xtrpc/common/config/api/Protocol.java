@@ -1,14 +1,19 @@
 package com.github.lahahana.xtrpc.common.config.api;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class Protocol {
 
-    private String name;
+    protected String name;
 
-    private String transporter;
+    protected String transporter;
 
-    private String serialization;
+    protected String serialization;
 
+    protected int port;
+
+    protected Protocol(){}
 }

@@ -15,10 +15,6 @@ public class ServiceDiscovery {
     private Map<String, List<Service>> serviceMap = new ConcurrentHashMap<>();
 
     public ServiceDiscovery() {
-        Service service = new Service("com.github.lahahana.xtrpc.test.service.AddressService", NetworkUtil.getLocalHostInetAddress().getHostAddress(), 8088);
-        List<Service> services = new ArrayList<>();
-        services.add(service);
-        serviceMap.put(service.getInterfaceClazz(), services);
     }
 
     @Mock

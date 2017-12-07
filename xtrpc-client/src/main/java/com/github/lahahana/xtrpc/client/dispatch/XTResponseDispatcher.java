@@ -1,6 +1,5 @@
 package com.github.lahahana.xtrpc.client.dispatch;
 
-import com.github.lahahana.xtrpc.client.ClientStub;
 import com.github.lahahana.xtrpc.common.domain.XTRequest;
 import com.github.lahahana.xtrpc.common.domain.XTResponse;
 import com.github.lahahana.xtrpc.common.domain.XTResponseAware;

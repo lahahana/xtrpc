@@ -1,4 +1,4 @@
-package com.github.lahahana.xtrpc.test.client;
+package com.github.lahahana.xtrpc.test.mock;
 
 import com.github.lahahana.xtrpc.client.proxy.RPCClientProxy;
 import com.github.lahahana.xtrpc.test.domain.Address;
@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
-import java.util.stream.Stream;
 
 public class ClientMock {
 
@@ -27,7 +26,7 @@ public class ClientMock {
 //        User user = new User(0, "Leon", 20);
 //        testExecutors.execute(new UserTask());
         ArrayList<Long> costTimeList = new ArrayList();
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 10; i++) {
             Future<Long> f = testExecutors.submit(new AddressTask());
             costTimeList.add(f.get());
         }

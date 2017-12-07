@@ -3,7 +3,6 @@ package com.github.lahahana.xtrpc.common.domain;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.io.Serializable;
 
@@ -15,7 +14,7 @@ public class XTRequest implements Serializable {
 
     private long timeout;
 
-    private String interfaceClazz;
+    private String interfaceName;
 
     private String method;
 
@@ -28,9 +27,9 @@ public class XTRequest implements Serializable {
         this.timeout = 2000L;
     }
 
-    public XTRequest(long requestId, String interfaceClazz, String method, Class<?>[] argsType, Object[] args) {
+    public XTRequest(long requestId, String interfaceName, String method, Class<?>[] argsType, Object[] args) {
         this.requestId = requestId;
-        this.interfaceClazz = interfaceClazz;
+        this.interfaceName = interfaceName;
         this.method = method;
         this.argsType = argsType;
         this.args = args;

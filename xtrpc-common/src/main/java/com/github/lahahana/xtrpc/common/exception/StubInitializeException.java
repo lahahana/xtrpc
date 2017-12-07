@@ -1,6 +1,6 @@
 package com.github.lahahana.xtrpc.common.exception;
 
-public class StubInitializeException extends Exception {
+public class StubInitializeException extends RuntimeException {
 
     public StubInitializeException(String message) {
         super(message);

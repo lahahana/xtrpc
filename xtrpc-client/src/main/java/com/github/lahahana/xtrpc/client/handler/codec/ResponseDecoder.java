@@ -20,42 +20,20 @@ public class ResponseDecoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
         if (in.isReadable()) {
-            in.markReaderIndex();
-            byte header = in.readByte();
-            //check heart beat response
-            if (header == MessageConstraints.FUNCTION_RESPONSE_HEAD) {
-                logger.debug("receive function response on channel:{}", ctx.channel());
-                if (in.readableBytes() < codecUtil.getByteNumOfDataLengthMark()) {
-                    in.resetReaderIndex();
-                    return;
-                }
-                int dataLength = in.readInt();
-                if (in.readableBytes() < dataLength) {
-                    in.resetReaderIndex();
-                    return;
-                }
-                byte[] data = new byte[dataLength];
-                in.readBytes(data);
-                Object result = codecUtil.decode(data);
-                out.add(result);
-            } else if (header == MessageConstraints.XTRESPONSE_HEAD) {
-                if (in.readableBytes() < codecUtil.getByteNumOfDataLengthMark()) {
-                    in.resetReaderIndex();
-                    return;
-                }
-                int dataLength = in.readInt();
-                if (in.readableBytes() < dataLength) {
-                    in.resetReaderIndex();
-                    return;
-                }
-                byte[] data = new byte[dataLength];
-                in.readBytes(data);
-                Object result = codecUtil.decode(data);
-                out.add(result);
-
-            } else {
-                in.resetReaderIndex();
+            byte msgType = in.readByte();
+            if (in.readableBytes() < codecUtil.getByteNumOfDataLengthMark()) {
+                return;
             }
+            in.markReaderIndex();
+            int dataLength = in.readInt();
+            if (in.readableBytes() < dataLength) {
+                in.resetReaderIndex();
+                return;
+            }
+            byte[] data = new byte[dataLength];
+            in.readBytes(data);
+            Object result = codecUtil.decode(data);
+            out.add(result);
         }
     }
 }

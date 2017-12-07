@@ -1,31 +1,33 @@
 package com.github.lahahana.xtrpc.common.domain;
 
-import lombok.Data;
 import lombok.Getter;
 
 public class Service {
 
-    @Getter private String interfaceClazz;
+    @Getter private String serviceInterface;
 
-    @Getter private String host;
+    @Getter private String protocol;
 
-    @Getter private int port;
+    @Getter private String address;
 
     @Getter private boolean available;
 
-    public Service(String interfaceClazz, String host, int port) {
-        this.interfaceClazz = interfaceClazz;
-        this.host = host;
-        this.port = port;
+    @Getter private boolean lazyInit;
+
+    public Service(String serviceInterface, String protocol, String address) {
+        this.serviceInterface = serviceInterface;
+        this.protocol = protocol;
+        this.address = address;
         this.available = true;
+        this.lazyInit = false;
     }
 
     public String getUniqueKey() {
-        return interfaceClazz+ "-" + host+ ":" + port;
+        return serviceInterface + "-" + address;
     }
 
     @Override
     public String toString() {
-        return interfaceClazz+ "-" + host+ ":" + port;
+        return serviceInterface + "-" + address;
     }
 }

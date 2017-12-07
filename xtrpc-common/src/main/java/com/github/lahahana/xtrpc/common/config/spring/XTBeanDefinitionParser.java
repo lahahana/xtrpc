@@ -46,7 +46,7 @@ public class XTBeanDefinitionParser implements BeanDefinitionParser {
             String generatedBeanName = element.getAttribute("name");
             if (generatedBeanName == null || generatedBeanName.length() == 0) {
                 if (Protocol.class.equals(beanClazz)) {
-                    generatedBeanName = Constraints.PROTOCOL_XT;
+                    generatedBeanName = Constraints.Protocol.XT.value();
                 } else {
                     generatedBeanName = element.getAttribute("interface");
                 }

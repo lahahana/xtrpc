@@ -1,11 +1,8 @@
 package com.github.lahahana.xtrpc.client.proxy;
 
-import com.github.lahahana.xtrpc.client.ClientStub;
-import com.github.lahahana.xtrpc.common.exception.InvokeTimeoutException;
-import com.github.lahahana.xtrpc.common.exception.ServiceNotFoundException;
+import com.github.lahahana.xtrpc.client.stub.NettyClientStub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jmx.access.InvocationFailureException;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -22,7 +19,7 @@ public class JdkProxyProvider implements ProxyProvider {
 
         private static final Logger logger = LoggerFactory.getLogger(JdkProxy.class);
 
-        private static ClientStub clientStub = ClientStub.getInstance();
+        private static NettyClientStub clientStub = NettyClientStub.getInstance();
 
         private JdkProxy() {}
 

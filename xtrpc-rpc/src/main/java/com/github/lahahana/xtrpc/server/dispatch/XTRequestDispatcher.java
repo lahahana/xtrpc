@@ -5,6 +5,7 @@ import com.github.lahahana.xtrpc.common.constant.MessageConstraints;
 import com.github.lahahana.xtrpc.common.domain.XTRequest;
 import com.github.lahahana.xtrpc.common.domain.XTResponse;
 import com.github.lahahana.xtrpc.common.exception.ServiceNotFoundException;
+import com.github.lahahana.xtrpc.common.threadfactory.CustomThreadFactory;
 import com.github.lahahana.xtrpc.common.util.Mock;
 import com.github.lahahana.xtrpc.server.ChannelHandlerCtxHolder;
 import com.github.lahahana.xtrpc.server.dispatch.spi.RequestDispatcher;
@@ -25,12 +26,12 @@ public class XTRequestDispatcher implements RequestDispatcher {
 
     private HashMap<String, Object> mockServiceFromSpringContext = new HashMap<>();
 
-    private ExecutorService xtRequestExecutor = Executors.newFixedThreadPool(100);
+    private ExecutorService xtRequestExecutor = Executors.newFixedThreadPool(10, new CustomThreadFactory("xtWorkerThread"));
 
     private ChannelHandlerCtxHolder channelHandlerCtxHolder = ChannelHandlerCtxHolder.getInstance();
 
     public Future dispatch(Channel channel, XTRequest xtRequest) {
-        String interfaceClazz = xtRequest.getInterfaceClazz();
+        String interfaceClazz = xtRequest.getInterfaceName();
         String method = xtRequest.getMethod();
         Class<?>[] argsType = xtRequest.getArgsType();
         Object[] args = xtRequest.getArgs();

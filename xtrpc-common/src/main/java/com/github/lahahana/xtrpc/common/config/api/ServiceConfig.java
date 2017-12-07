@@ -7,7 +7,7 @@ public class ServiceConfig {
 
     private String id;
 
-    private String ref;
+    private Object ref;
 
     private Application application;
 

@@ -3,7 +3,7 @@ package com.github.lahahana.xtrpc.common.exception;
 /**
  * Used when Service not found in service register center
  * */
-public class ServiceNotFoundException extends RuntimeException {
+public class ServiceNotFoundException extends Exception {
 
     public ServiceNotFoundException(String message, Throwable cause) {
         super(message, cause);

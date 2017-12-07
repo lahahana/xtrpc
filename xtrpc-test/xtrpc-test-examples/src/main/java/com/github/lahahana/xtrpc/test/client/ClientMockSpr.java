@@ -3,6 +3,7 @@ package com.github.lahahana.xtrpc.test.client;
 import com.github.lahahana.xtrpc.client.proxy.RPCClientProxy;
 import com.github.lahahana.xtrpc.test.domain.Address;
 import com.github.lahahana.xtrpc.test.domain.User;
+import com.github.lahahana.xtrpc.test.mock.ClientMock;
 import com.github.lahahana.xtrpc.test.service.AddressService;
 import com.github.lahahana.xtrpc.test.service.UserService;
 import org.slf4j.Logger;
@@ -24,9 +25,9 @@ public class ClientMockSpr {
 
     public static void main(String[] args) {
 //        User user = new User(0, "Leon", 20);
-        testExecutors.execute(new ClientMock.UserTask());
+        testExecutors.execute(new UserTask());
         for (int i = 0; i < 10; i++) {
-            testExecutors.submit(new ClientMock.AddressTask());
+            testExecutors.submit(new AddressTask());
         }
 
     }
