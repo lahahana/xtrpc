@@ -1,6 +1,7 @@
 package com.github.lahahana.xtrpc.common.util;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
@@ -32,5 +33,13 @@ public class NetworkUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String assembleAddress(String host, int port) {
+        return host + ":" + port;
+    }
+
+    public static String assembleAddress(InetSocketAddress inetSocketAddress) {
+        return inetSocketAddress.getHostName() + ":" + inetSocketAddress.getPort();
     }
 }

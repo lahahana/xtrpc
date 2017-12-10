@@ -1,33 +1,47 @@
 package com.github.lahahana.xtrpc.common.domain;
 
 import lombok.Getter;
+import lombok.Setter;
 
-public class Service {
+import java.io.Serializable;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 
-    @Getter private String serviceInterface;
+public class Service implements Serializable {
 
-    @Getter private String protocol;
+    @Getter
+    private String serviceInterface;
 
-    @Getter private String address;
+    @Getter
+    private String protocol;
 
-    @Getter private boolean available;
+    @Getter
+    private String host;
 
-    @Getter private boolean lazyInit;
+    @Getter
+    private int port;
 
-    public Service(String serviceInterface, String protocol, String address) {
+    @Getter @Setter
+    private boolean available;
+
+    @Getter @Setter
+    private boolean lazyInit;
+
+    public Service(String serviceInterface, String protocol, String host, int port) {
         this.serviceInterface = serviceInterface;
         this.protocol = protocol;
-        this.address = address;
+        this.host = host;
+        this.port = port;
         this.available = true;
         this.lazyInit = false;
     }
 
     public String getUniqueKey() {
-        return serviceInterface + "-" + address;
+        return serviceInterface + "-" + host + ":" + port;
     }
 
     @Override
     public String toString() {
-        return serviceInterface + "-" + address;
+        return getUniqueKey();
     }
 }

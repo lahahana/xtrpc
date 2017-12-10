@@ -1,6 +1,11 @@
 package com.github.lahahana.xtrpc.common.domain;
 
-public interface Aware {
+import com.github.lahahana.xtrpc.common.exception.TimeoutException;
 
-    public void aware();
+public interface Aware<R> extends Notifier<R> {
+
+    public R aware();
+
+    public R aware(long timeout) throws TimeoutException;
+
 }

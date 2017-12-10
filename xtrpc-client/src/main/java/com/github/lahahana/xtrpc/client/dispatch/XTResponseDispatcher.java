@@ -6,7 +6,6 @@ import com.github.lahahana.xtrpc.common.domain.XTResponseAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,8 +19,6 @@ public class XTResponseDispatcher {
     private static volatile XTResponseDispatcher instance;
 
     private Map<Long, XTResponseAware> registeredXTResponseAware = new ConcurrentHashMap<>();
-
-    private ThreadLocal<Map<Long, XTResponseAware>> registeredXTResponseAwareTL = new XTResponseDispatcherThreadLocal();
 
     private XTResponseDispatcher() {
         super();
@@ -38,25 +35,16 @@ public class XTResponseDispatcher {
         return instance;
     }
 
-    public Object register(XTRequest request, XTResponseAware responseAware) {
-        registeredXTResponseAware.put(request.getRequestId(), responseAware);
-        return responseAware;
+    public XTResponseAware register(XTRequest request) {
+        XTResponseAware xtResponseAware = new XTResponseAware(request.getRequestId());
+        registeredXTResponseAware.put(request.getRequestId(), xtResponseAware);
+        return xtResponseAware;
     }
 
     public void dispatch(XTResponse response) {
-        XTResponseAware responseAware = registeredXTResponseAware.remove(response.getRequestId());
-        responseAware.setResponse(response);
-        synchronized (responseAware) {
-            responseAware.notify();
-        }
         logger.debug("dispatch XTResponse: requestId={}", response.getRequestId());
+        XTResponseAware responseAware = registeredXTResponseAware.remove(response.getRequestId());
+        responseAware.notify(response);
     }
 
-    @Deprecated
-    private class XTResponseDispatcherThreadLocal extends ThreadLocal{
-        @Override
-        protected Object initialValue() {
-            return new HashMap<>();
-        }
-    }
 }

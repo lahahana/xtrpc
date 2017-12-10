@@ -3,7 +3,7 @@ package com.github.lahahana.xtrpc.common.exception;
 /**
  * Used when service is not available when call remote method
  * */
-public class ServiceNotAvailableException extends RuntimeException {
+public class ServiceNotAvailableException extends Exception {
 
     public ServiceNotAvailableException() {
     }

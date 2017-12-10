@@ -9,7 +9,14 @@ public abstract class AbstractServiceStub implements ServiceStub {
 
     protected final ServiceConfig serviceConfig;
 
+    protected final Object serviceRef;
+
     public AbstractServiceStub(ServiceConfig serviceConfig) {
         this.serviceConfig = serviceConfig;
+        this.serviceRef = serviceConfig.getRef();
     }
+
+    public Object getServiceRef(){
+        return serviceRef;
+    };
 }

@@ -7,6 +7,7 @@ import com.github.lahahana.xtrpc.common.domain.FunctionRequest;
 import com.github.lahahana.xtrpc.common.domain.FunctionResponse;
 import com.github.lahahana.xtrpc.common.domain.XTRequest;
 import com.github.lahahana.xtrpc.common.domain.XTResponse;
+import org.objenesis.strategy.StdInstantiatorStrategy;
 
 public class KryoPoolFactory {
 
@@ -20,6 +21,7 @@ public class KryoPoolFactory {
             kryo.register(XTResponse.class);
             kryo.register(FunctionRequest.class);
             kryo.register(FunctionResponse.class);
+            kryo.register(Throwable.class);
             return kryo;
         }
     };

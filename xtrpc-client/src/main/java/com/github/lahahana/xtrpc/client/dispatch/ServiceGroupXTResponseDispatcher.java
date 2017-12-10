@@ -1,7 +1,6 @@
 package com.github.lahahana.xtrpc.client.dispatch;
 
 import com.github.lahahana.xtrpc.common.domain.XTResponse;
-import com.github.lahahana.xtrpc.common.domain.XTResponseAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

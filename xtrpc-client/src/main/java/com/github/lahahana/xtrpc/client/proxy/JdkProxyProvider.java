@@ -1,6 +1,6 @@
 package com.github.lahahana.xtrpc.client.proxy;
 
-import com.github.lahahana.xtrpc.client.stub.NettyClientStub;
+import com.github.lahahana.xtrpc.client.netty.NettyClientStub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

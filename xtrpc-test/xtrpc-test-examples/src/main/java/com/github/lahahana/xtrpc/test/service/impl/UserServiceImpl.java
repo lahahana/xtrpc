@@ -1,7 +1,6 @@
 package com.github.lahahana.xtrpc.test.service.impl;
 
 import com.github.lahahana.xtrpc.test.domain.User;
-import com.github.lahahana.xtrpc.test.domain.UserOuterClass;
 import com.github.lahahana.xtrpc.test.service.UserService;
 
 import java.util.ArrayList;

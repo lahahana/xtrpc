@@ -5,6 +5,10 @@ package com.github.lahahana.xtrpc.common.exception;
  * */
 public class InvokeTimeoutException extends RuntimeException {
 
+    public InvokeTimeoutException() {
+        super();
+    }
+
     public InvokeTimeoutException(String message) {
         super(message);
     }

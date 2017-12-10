@@ -17,7 +17,15 @@ public class XTRequestInboundHandler extends SimpleChannelInboundHandler<XTReque
 
     private static ChannelHandlerCtxHolder channelHandlerCtxHolder = ChannelHandlerCtxHolder.getInstance();
 
-    private static XTRequestDispatcher dispatcher = new XTRequestDispatcher();
+    private XTRequestDispatcher dispatcher;
+
+    private Object serviceRef;
+
+    public XTRequestInboundHandler(Object serviceRef) {
+        this.serviceRef = serviceRef;
+        this.dispatcher = new XTRequestDispatcher(serviceRef);
+
+    }
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
@@ -38,7 +46,7 @@ public class XTRequestInboundHandler extends SimpleChannelInboundHandler<XTReque
         try {
             String clientHost = ctx.channel().remoteAddress().toString();
             logger.debug("receive request: srcHost={}, XTRequest={}", clientHost, msg);
-            //dispatch request to local function in async
+            //dispatch request to local function async
             dispatcher.dispatch(ctx.channel(), msg);
         } catch (Exception e) {
             logger.error("fail to dispatch request: XTRequest={}", msg, e);
@@ -57,8 +65,4 @@ public class XTRequestInboundHandler extends SimpleChannelInboundHandler<XTReque
         channelHandlerCtxHolder.removeChannelHandlerCtx(ctx);
     }
 
-    @Mock
-    public void addMockService(String serviceName, Object object) {
-        dispatcher.addMockService(serviceName, object);
-    }
 }

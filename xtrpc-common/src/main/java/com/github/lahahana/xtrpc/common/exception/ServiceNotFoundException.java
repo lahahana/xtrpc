@@ -5,6 +5,10 @@ package com.github.lahahana.xtrpc.common.exception;
  * */
 public class ServiceNotFoundException extends Exception {
 
+    public ServiceNotFoundException() {
+        super();
+    }
+
     public ServiceNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
