@@ -3,9 +3,11 @@ package com.github.lahahana.xtrpc.client.importer;
 import com.github.lahahana.xtrpc.client.proxy.RPCClientProxy;
 import com.github.lahahana.xtrpc.client.netty.NettyClientStub;
 import com.github.lahahana.xtrpc.common.config.api.Application;
+import com.github.lahahana.xtrpc.common.config.api.Protocol;
 import com.github.lahahana.xtrpc.common.config.api.Registry;
 import com.github.lahahana.xtrpc.common.domain.Service;
 import com.github.lahahana.xtrpc.common.exception.ServiceNotAvailableException;
+import com.github.lahahana.xtrpc.common.exception.ServiceNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,36 +16,47 @@ public class XTServiceImporter {
 
     private Application application;
     private Registry registry;
-    private String protocol;
     private List<DirectRefService> directRefServices;
+    private List<RegistryRefService> registryRefServices = new ArrayList<>();
 
     private XTServiceImporter(XTServiceImporter.Builder builder) {
         this.application = builder.application;
-        this.protocol = builder.protocol;
         this.directRefServices = builder.directRefServices;
+        this.registryRefServices = builder.registryRefServices;
     }
 
     public void doImport() {
         NettyClientStub stub = NettyClientStub.getInstance();
         directRefServices.stream().forEach((s) -> {
-            Service service = new Service(s.getServiceInterface().getName(), s.getProtocol(),s.getHost(), s.getPort());
+            Service service = new Service(s.getServiceInterface().getName(), s.getProtocol().getName(), s.getHost(), s.getPort());
             try {
                 stub.initRefService(service);
             } catch (ServiceNotAvailableException e) {
-                e.printStackTrace();
+                boolean sameDirectRefServiceExsits = directRefServices.stream().filter((s2) -> s2.getInterface().equals(service.getServiceInterface())).count() > 1 ? true : false;
+                if (sameDirectRefServiceExsits) {
+                    //TO-DO ignore if can accept one ref service offline
+                }
+            }
+        });
+
+        registryRefServices.stream().forEach((s) -> {
+            try {
+                stub.initRegistryRefService(s);
+            } catch (ServiceNotFoundException e) {
+                 e.printStackTrace();
             }
         });
     }
 
-    public <T>T getRefService(Class<T> serviceInterface){
+    public <T> T getRefService(Class<T> serviceInterface) {
         return RPCClientProxy.getProxy(serviceInterface);
     }
 
     public static class Builder {
 
         private Application application;
-        private String protocol;
         private List<DirectRefService> directRefServices = new ArrayList<>();
+        private List<RegistryRefService> registryRefServices = new ArrayList<>();
 
         public Builder() {
         }
@@ -53,20 +66,19 @@ public class XTServiceImporter {
             return this;
         }
 
-        public Builder setProtocol(String protocol) {
-            this.protocol = protocol;
-            return this;
-        }
-
-        public Builder addRefService(Class<?> serviceInterface) {
-            if(!serviceInterface.isInterface()) {
+        public Builder addRegistryRefService(RegistryRefService service) {
+            if (!service.getServiceInterface().isInterface()) {
                 throw new IllegalArgumentException("parameter must be interface");
             }
+            registryRefServices.add(service);
             return this;
         }
 
+        /**
+         * Used for direct ref service , skip service discovery through registry
+         */
         public Builder addDirectRefService(DirectRefService service) {
-            if(!service.getServiceInterface().isInterface()) {
+            if (!service.getServiceInterface().isInterface()) {
                 throw new IllegalArgumentException("parameter must be interface");
             }
             directRefServices.add(service);

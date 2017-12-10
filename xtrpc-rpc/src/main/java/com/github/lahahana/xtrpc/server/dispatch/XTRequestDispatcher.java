@@ -54,6 +54,7 @@ public class XTRequestDispatcher implements RequestDispatcher {
                 xtResponse.setStatusCode(Constraints.STATUS_ERROR);
                 xtResponse.setThrowable(th.toString());
             } catch (Exception e) {
+                logger.error(e.getMessage(), e);
                 xtResponse.setStatusCode(Constraints.STATUS_METHOD_ERROR);
                 xtResponse.setThrowable(e.toString());
             } finally {

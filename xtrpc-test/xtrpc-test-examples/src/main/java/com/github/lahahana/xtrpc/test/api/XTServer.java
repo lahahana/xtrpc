@@ -2,18 +2,26 @@ package com.github.lahahana.xtrpc.test.api;
 
 import com.github.lahahana.xtrpc.common.config.api.Application;
 import com.github.lahahana.xtrpc.common.config.XTProtocol;
+import com.github.lahahana.xtrpc.common.config.api.Registry;
+import com.github.lahahana.xtrpc.common.util.NetworkUtil;
 import com.github.lahahana.xtrpc.server.exporter.XTServiceExporter;
+import com.github.lahahana.xtrpc.test.service.AddressService;
+import com.github.lahahana.xtrpc.test.service.UserService;
 import com.github.lahahana.xtrpc.test.service.impl.AddressServiceImpl;
 import com.github.lahahana.xtrpc.test.service.impl.UserServiceImpl;
 
 public class XTServer {
 
+    static String redisRegistryAddress = "127.0.0.1";
+
     public static void main(String[] args) throws Exception {
         XTProtocol protocol = new XTProtocol(8088);
+        Registry registry = new Registry("redis", redisRegistryAddress, 6379);
         new XTServiceExporter.Builder()
                                 .setApplication(new Application("ServerWithXTAppContext"))
                                 .setProtocol(protocol)
-                                .addServiceConfig(new AddressServiceImpl())
+                                .setRegistry(registry)
+                                .setService(AddressService.class, new AddressServiceImpl())
                                 .build()
                                 .doExport();
 
@@ -21,7 +29,8 @@ public class XTServer {
         new XTServiceExporter.Builder()
                 .setApplication(new Application("ServerWithXTAppContext2"))
                 .setProtocol(protocol2)
-                .addServiceConfig(new UserServiceImpl())
+                .setRegistry(registry)
+                .setService(UserService.class, new UserServiceImpl())
                 .build()
                 .doExport();
     }

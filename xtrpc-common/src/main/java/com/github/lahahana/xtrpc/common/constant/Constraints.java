@@ -18,6 +18,8 @@ public class Constraints {
 
     public static final int STATUS_METHOD_ERROR = 501;
 
+    public static final String DELIMITER_REDIS = ";";
+
 
     public static enum Protocol {
 

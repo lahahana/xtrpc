@@ -24,16 +24,20 @@ public class Service implements Serializable {
     @Getter @Setter
     private boolean available;
 
-    @Getter @Setter
-    private boolean lazyInit;
-
     public Service(String serviceInterface, String protocol, String host, int port) {
         this.serviceInterface = serviceInterface;
         this.protocol = protocol;
         this.host = host;
         this.port = port;
         this.available = true;
-        this.lazyInit = false;
+    }
+
+    public Service(String serviceInterface, String protocol, String host, int port, boolean available) {
+        this.serviceInterface = serviceInterface;
+        this.protocol = protocol;
+        this.host = host;
+        this.port = port;
+        this.available = available;
     }
 
     public String getUniqueKey() {

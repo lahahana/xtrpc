@@ -1,9 +1,14 @@
 package com.github.lahahana.xtrpc.client.skeleton;
 
-import com.github.lahahana.xtrpc.client.discovery.ServiceDiscovery;
+import com.github.lahahana.xtrpc.client.discovery.RedisServiceDiscoverer;
+import com.github.lahahana.xtrpc.client.discovery.ServiceDiscoverer;
+import com.github.lahahana.xtrpc.client.discovery.ServiceDiscovererFactory;
 import com.github.lahahana.xtrpc.client.dispatch.XTResponseDispatcher;
+import com.github.lahahana.xtrpc.client.importer.RegistryRefService;
 import com.github.lahahana.xtrpc.client.lb.LoadBalancer;
 import com.github.lahahana.xtrpc.client.lb.RandomLoadBalancer;
+import com.github.lahahana.xtrpc.common.config.api.Reference;
+import com.github.lahahana.xtrpc.common.config.api.Registry;
 import com.github.lahahana.xtrpc.common.constant.Constraints;
 import com.github.lahahana.xtrpc.common.domain.*;
 import com.github.lahahana.xtrpc.common.exception.*;
@@ -32,8 +37,6 @@ public abstract class ClientStub {
     private Map<String, Tuple<Lock, Boolean>> initializationLockMap = new ConcurrentHashMap<>();//true means connection established
 
     private LoadBalancer loadBalancer = new RandomLoadBalancer();
-
-    private ServiceDiscovery serviceDiscovery = new ServiceDiscovery();
 
     private ServiceHolder serviceHolder = ServiceHolder.getInstance();
 
@@ -69,6 +72,22 @@ public abstract class ClientStub {
         } finally {
             lock.unlock();
         }
+    }
+
+    public void initRegistryRefService(RegistryRefService registryRefService) throws ServiceNotFoundException {
+        Reference reference = new Reference();
+        reference.setInterfaceName(registryRefService.getServiceInterface().getName());
+        reference.setRegistry(registryRefService.getRegistry());
+        reference.setProtocol(registryRefService.getProtocol());
+        ServiceDiscoverer serviceDiscoverer = ServiceDiscovererFactory.getServiceDiscoverer(reference.getRegistry());
+        List<Service> services = serviceDiscoverer.discoverService(reference);
+        services.stream().forEach((s) -> {
+            try {
+                initRefService(s);
+            } catch (ServiceNotAvailableException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public Object invoke(Object obj, Method method, Object[] args) throws Exception {
@@ -143,10 +162,6 @@ public abstract class ClientStub {
             }
         }
         return null;
-    }
-
-    protected List<Service> discoverService(String interfaceName) throws ServiceNotFoundException {
-        return serviceDiscovery.listServicesByInterface(interfaceName);
     }
 
     protected Invoker selectInvoker(List<Invoker> invokers) {

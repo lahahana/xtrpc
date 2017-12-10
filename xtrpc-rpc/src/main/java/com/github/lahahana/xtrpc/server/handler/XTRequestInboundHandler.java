@@ -1,7 +1,6 @@
 package com.github.lahahana.xtrpc.server.handler;
 
 import com.github.lahahana.xtrpc.common.domain.XTRequest;
-import com.github.lahahana.xtrpc.common.util.Mock;
 import com.github.lahahana.xtrpc.server.ChannelHandlerCtxHolder;
 import com.github.lahahana.xtrpc.server.dispatch.XTRequestDispatcher;
 import io.netty.channel.ChannelHandler;

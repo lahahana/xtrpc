@@ -2,6 +2,7 @@ package com.github.lahahana.xtrpc.server.exporter;
 
 import com.github.lahahana.xtrpc.common.config.api.Application;
 import com.github.lahahana.xtrpc.common.config.api.Protocol;
+import com.github.lahahana.xtrpc.common.config.api.Registry;
 import com.github.lahahana.xtrpc.common.config.api.ServiceConfig;
 import com.github.lahahana.xtrpc.common.exception.StubInitializeException;
 import com.github.lahahana.xtrpc.server.stub.NettyServiceStub;
@@ -40,6 +41,7 @@ public class XTServiceExporter {
 
         private Application application;
         private Protocol protocol;
+        private Registry registry;
         private List<ServiceConfig> serviceConfigs = new ArrayList<>();
 
         public Builder() {
@@ -55,11 +57,24 @@ public class XTServiceExporter {
             return this;
         }
 
-        public Builder addServiceConfig(Object service) {
+        /**
+         * Service will not register to service registry if {@link Registry} not set
+         * */
+        public Builder setRegistry(Registry registry) {
+            this.registry = registry;
+            return this;
+        }
+
+        /**
+         * @param interfaceClass the interface of service which you want to established as remote ref service
+         * */
+        public Builder setService(Class<?> interfaceClass, Object service) {
             ServiceConfig serviceConfig = new ServiceConfig();
             serviceConfig.setApplication(application);
             serviceConfig.setProtocol(protocol);
+            serviceConfig.setRegistry(registry);
             serviceConfig.setRef(service);
+            serviceConfig.setInterfaceClass(interfaceClass);
             this.serviceConfigs.add(serviceConfig);
             return this;
         }

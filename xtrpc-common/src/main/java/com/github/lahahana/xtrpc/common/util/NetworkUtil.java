@@ -42,4 +42,13 @@ public class NetworkUtil {
     public static String assembleAddress(InetSocketAddress inetSocketAddress) {
         return inetSocketAddress.getHostName() + ":" + inetSocketAddress.getPort();
     }
+
+    public static Tuple<String, Integer> assembleHostPortPair(String address) {
+        String[] hostPortPair = address.split(":");
+        if (hostPortPair.length == 2) {
+            return new Tuple<>(hostPortPair[0], Integer.parseInt(hostPortPair[1]));
+        } else {
+            throw new IllegalArgumentException("invalid socket address format");
+        }
+    }
 }

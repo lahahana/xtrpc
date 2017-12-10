@@ -51,7 +51,7 @@
     <logger name="io.netty" level="INFO"/>
 
     <root>
-        <level value="INFO" />
+        <level value="debug" />
         <appender-ref ref="STDOUT" />
         <!--<appender-ref ref="FILE" />-->
         <!--<appender-ref ref="ERROR_FILE" />-->

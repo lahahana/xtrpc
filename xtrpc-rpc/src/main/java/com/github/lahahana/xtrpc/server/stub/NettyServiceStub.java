@@ -1,8 +1,12 @@
 package com.github.lahahana.xtrpc.server.stub;
 
 import com.github.lahahana.xtrpc.common.config.api.ServiceConfig;
+import com.github.lahahana.xtrpc.common.domain.Service;
 import com.github.lahahana.xtrpc.common.exception.StubInitializeException;
+import com.github.lahahana.xtrpc.common.registry.ServiceRegistry;
+import com.github.lahahana.xtrpc.common.registry.ServiceRegistryFactory;
 import com.github.lahahana.xtrpc.common.threadfactory.CustomThreadFactory;
+import com.github.lahahana.xtrpc.common.util.NetworkUtil;
 import com.github.lahahana.xtrpc.server.handler.FunctionRequestInboundHandler;
 import com.github.lahahana.xtrpc.server.handler.XTRequestInboundHandler;
 import com.github.lahahana.xtrpc.server.handler.XTServerOutboundPortalHandler;
@@ -15,6 +19,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.nio.ch.Net;
 
 public class NettyServiceStub extends AbstractServiceStub {
 
@@ -57,8 +62,13 @@ public class NettyServiceStub extends AbstractServiceStub {
             int inetPort = serviceConfig.getProtocol().getPort();
             serverBootstrap.bind(inetHost, inetPort).sync();
             logger.debug("service stub bind to {}:{}", inetHost, inetPort);
+            boolean needRegistry = serviceConfig.getRegistry() == null ? false : true;
+            if(needRegistry) {
+                ServiceRegistry serviceRegistry = ServiceRegistryFactory.getServiceRegistry(serviceConfig.getRegistry());
+                Service service = new Service(serviceConfig.getInterfaceClass().getName(), serviceConfig.getProtocol().getName(), NetworkUtil.getLocalHostInetAddress().getHostName(), serviceConfig.getProtocol().getPort());
+                serviceRegistry.register(service);
+            }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             shutdown();
             throw new StubInitializeException("service stub fail to initialize", e);
         }

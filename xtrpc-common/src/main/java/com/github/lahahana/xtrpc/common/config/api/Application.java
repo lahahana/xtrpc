@@ -6,7 +6,7 @@ import lombok.Setter;
 
 public class Application {
 
-    @Getter @Setter private String name;
+    @Getter private final String name;
 
     public Application(String name) {
         this.name = name;

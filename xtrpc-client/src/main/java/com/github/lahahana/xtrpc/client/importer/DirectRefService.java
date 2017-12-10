@@ -1,8 +1,12 @@
 package com.github.lahahana.xtrpc.client.importer;
 
+import com.github.lahahana.xtrpc.common.config.api.Protocol;
+import com.github.lahahana.xtrpc.common.util.NetworkUtil;
+import com.github.lahahana.xtrpc.common.util.Tuple;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.omg.CORBA.INTERNAL;
 
 import java.net.InetSocketAddress;
 
@@ -12,15 +16,15 @@ public class DirectRefService implements RefService {
 
     private Class<?> serviceInterface;
 
-    private String protocol;
+    private Protocol protocol;
 
     private InetSocketAddress inetSocketAddress;
 
-    public DirectRefService(Class<?> serviceInterface, String protocol, String address) {
+    public DirectRefService(Class<?> serviceInterface, Protocol protocol, String address) {
         this.serviceInterface = serviceInterface;
         this.protocol = protocol;
-        String[] hostAndPort = address.split(":");
-        this.inetSocketAddress = new InetSocketAddress(hostAndPort[0], Integer.parseInt(hostAndPort[1]));
+        Tuple<String, Integer> hostPortPair = NetworkUtil.assembleHostPortPair(address);
+        this.inetSocketAddress = new InetSocketAddress(hostPortPair.getK(), hostPortPair.getV());
     }
 
     @Override

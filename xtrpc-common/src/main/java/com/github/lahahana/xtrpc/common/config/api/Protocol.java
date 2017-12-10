@@ -6,16 +6,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 public class Protocol {
 
-    protected String name;
+    private final String name;
 
-    protected String transporter;
+    private final String transporter;
 
-    protected String serialization;
+    private final String serialization;
 
-    protected int port;
+    private final int port;
 
     public Protocol(){
         this("xt", "netty", "kryo", 8088);

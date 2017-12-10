@@ -5,12 +5,16 @@ import lombok.Data;
 @Data
 public class ServiceConfig {
 
-    private String id;
-
-    private Object ref;
-
     private Application application;
 
     private Protocol protocol;
+
+    private Registry registry;
+
+    private Class<?> interfaceClass;
+
+    private Object ref;
+
+
 
 }
