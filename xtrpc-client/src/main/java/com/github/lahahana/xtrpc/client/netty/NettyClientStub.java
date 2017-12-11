@@ -9,9 +9,10 @@ import com.github.lahahana.xtrpc.client.netty.handler.codec.ResponseDecoder;
 import com.github.lahahana.xtrpc.client.netty.handler.codec.XTRequestEncoder;
 import com.github.lahahana.xtrpc.client.skeleton.ClientStub;
 import com.github.lahahana.xtrpc.common.domain.Aware;
-import com.github.lahahana.xtrpc.common.domain.ChannelRegisterAware;
+import com.github.lahahana.xtrpc.common.domain.ChannelActiveAware;
 import com.github.lahahana.xtrpc.common.domain.Service;
 import com.github.lahahana.xtrpc.common.exception.ServiceNotAvailableException;
+import com.github.lahahana.xtrpc.common.exception.TimeoutException;
 import com.github.lahahana.xtrpc.common.threadfactory.CustomThreadFactory;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
@@ -57,7 +58,7 @@ public final class NettyClientStub extends ClientStub {
 
     @Override
     protected void initRefService0(Service service) throws ServiceNotAvailableException {
-        Aware aware = new ChannelRegisterAware();
+        Aware aware = new ChannelActiveAware();
         String threadFactoryName = xtServiceThreadPrefix + "-" + service.getUniqueKey();
         EventLoopGroup workerEventGroup = new NioEventLoopGroup(5, new CustomThreadFactory(threadFactoryName));
         Bootstrap bootstrap = new Bootstrap();
@@ -75,7 +76,7 @@ public final class NettyClientStub extends ClientStub {
                     protected void initChannel(Channel ch) throws Exception {
                         ch.pipeline().addLast(new ResponseDecoder())
                                 .addLast(new XTResponseInboundHandler(service.getServiceInterface()))
-                                .addLast(new PortalInboundHandler(service.getServiceInterface(), new ChannelRegisterAware()))
+                                .addLast(new PortalInboundHandler(service.getServiceInterface(), aware))
                                 .addLast(new FunctionResponseInboundHandler())
                                 .addLast(new FunctionRequestEncoder())
                                 .addLast(new XTRequestEncoder())
@@ -103,7 +104,11 @@ public final class NettyClientStub extends ClientStub {
             eventLoopGroups.add(workerEventGroup);
         }
         //block until channel active
-        aware.aware();
+        try {
+            aware.aware();
+        } catch (TimeoutException e) {
+            throw new ServiceNotAvailableException(e);
+        }
     }
 
     @Override

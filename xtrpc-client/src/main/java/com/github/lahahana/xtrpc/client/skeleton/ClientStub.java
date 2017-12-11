@@ -64,9 +64,9 @@ public abstract class ClientStub {
                 return;
             }
             initRefService0(service);
+            logger.debug("connection established: refService={}", service);
             serviceHolder.holdService(service);
             lockStateTuple0.setV(true);
-            logger.debug("connection established: refService={}", service);
         } catch (Exception e) {
             throw new ServiceNotAvailableException(e);
         } finally {
@@ -75,6 +75,7 @@ public abstract class ClientStub {
     }
 
     public void initRegistryRefService(RegistryRefService registryRefService) throws ServiceNotFoundException {
+        logger.debug("start to establish connection: registryRefService={}", registryRefService);
         Reference reference = new Reference();
         reference.setInterfaceName(registryRefService.getServiceInterface().getName());
         reference.setRegistry(registryRefService.getRegistry());

@@ -7,8 +7,8 @@ public abstract class AbstractAware<R> implements Aware<R> {
     private R msg;
 
     @Override
-    public R aware() {
-        return msg;
+    public R aware()  throws TimeoutException {
+        return aware(0L);
     }
 
     @Override

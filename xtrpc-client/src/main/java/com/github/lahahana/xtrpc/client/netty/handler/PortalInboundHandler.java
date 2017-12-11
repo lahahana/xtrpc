@@ -20,11 +20,11 @@ public class PortalInboundHandler extends ChannelInboundHandlerAdapter {
 
     private Invoker invoker;
 
-    private Aware registerAware;
+    private Aware channelActiveAware;
 
     public PortalInboundHandler(String interfaceClazz, Aware aware) {
         this.interfaceClazz = interfaceClazz;
-        this.registerAware = aware;
+        this.channelActiveAware = aware;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class PortalInboundHandler extends ChannelInboundHandlerAdapter {
         logger.info("channel connected:{} ", ctx.channel());
         invoker = new NettyInvoker(interfaceClazz, ctx);
         invokerHolder.holdInvoker(invoker);
-        registerAware.notify(ctx);
+        channelActiveAware.notify(ctx);
         super.channelActive(ctx);
     }
 

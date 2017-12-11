@@ -25,7 +25,7 @@ public class JdkProxyProvider implements ProxyProvider {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Exception {
-            logger.debug("service:{}, method:{}, args:{}",proxy.getClass().getName(), method.getName(), args);
+            logger.debug("service:{}, method:{}, args:{}",method.getDeclaringClass().getName(), method.getName(), args);
             return clientStub.invoke(proxy, method, args);
         }
 

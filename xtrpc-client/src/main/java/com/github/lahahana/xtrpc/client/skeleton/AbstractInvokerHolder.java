@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,7 +15,7 @@ public abstract class AbstractInvokerHolder implements InvokerHolder {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractInvokerHolder.class);
 
-    private Map<String, List<Invoker>> invokersMap = new ConcurrentHashMap<>();
+    private Map<String, List<Invoker>> invokersMap = new HashMap<>();
 
     private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
@@ -77,6 +78,11 @@ public abstract class AbstractInvokerHolder implements InvokerHolder {
 
     @Override
     public List<Invoker> listInvokersOfInterface(String interfaceName) {
-        return invokersMap.get(interfaceName);
+        try {
+            readLock.lock();
+            return invokersMap.get(interfaceName);
+        } finally {
+            readLock.unlock();
+        }
     }
 }

@@ -27,7 +27,7 @@ public abstract class ScheduledHeartBeatInvoker extends TimerTask {
     public void start() {
         timer = new Timer("scheduledHeartBeatInvoker",true);
         timer.scheduleAtFixedRate(getSelf(), HEART_BEAT_INTERVAL, HEART_BEAT_INTERVAL);
-        logger.debug("scheduledHeartBeatInvoker started, delay={},heart beat interval(ms)={}",HEART_BEAT_INTERVAL, HEART_BEAT_INTERVAL);
+        logger.debug("scheduledHeartBeatInvoker started, delay(ms)={},heart beat interval(ms)={}",HEART_BEAT_INTERVAL, HEART_BEAT_INTERVAL);
     }
 
     public void stop() {

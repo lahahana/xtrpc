@@ -24,11 +24,17 @@ public class RegistryRefService implements RefService {
         return serviceInterface;
     }
 
+    /**
+     * @return host of registry
+     * */
     @Override
     public String getHost() {
         return registry.getHost();
     }
 
+    /**
+     * @return port of registry
+     * */
     @Override
     public int getPort() {
         return registry.getPort();
