@@ -2,13 +2,9 @@ package com.github.lahahana.xtrpc.client.discovery;
 
 import com.github.lahahana.xtrpc.common.config.api.Reference;
 import com.github.lahahana.xtrpc.common.config.api.Registry;
-import com.github.lahahana.xtrpc.common.config.api.ServiceConfig;
 import com.github.lahahana.xtrpc.common.constant.Constraints;
 import com.github.lahahana.xtrpc.common.domain.Service;
 import com.github.lahahana.xtrpc.common.exception.ServiceNotFoundException;
-import com.github.lahahana.xtrpc.common.registry.RedisServiceRegistry;
-import com.github.lahahana.xtrpc.common.util.NetworkUtil;
-import com.github.lahahana.xtrpc.common.util.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
@@ -16,24 +12,23 @@ import redis.clients.jedis.Jedis;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RedisServiceDiscoverer implements ServiceDiscoverer {
+public final class RedisServiceDiscoverer implements ServiceDiscoverer {
 
     private static final Logger logger = LoggerFactory.getLogger(RedisServiceDiscoverer.class);
 
     private Registry registry;
 
-    Jedis jedis;
+    private Jedis jedis;
 
     public RedisServiceDiscoverer(Registry registry) {
         this.registry = registry;
-        start();
     }
 
     public void start() {
         jedis = new Jedis(registry.getHost(), registry.getPort());
     }
 
-    public void close(){
+    public void destroy(){
         if(jedis.isConnected()) {
             jedis.close();
         }
@@ -60,4 +55,8 @@ public class RedisServiceDiscoverer implements ServiceDiscoverer {
         return services;
     }
 
+    @Override
+    public Registry getRegistry() {
+        return registry;
+    }
 }

@@ -2,8 +2,10 @@ package com.github.lahahana.xtrpc.common.config.api;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 public class Registry {
 
     private String type;
@@ -16,5 +18,10 @@ public class Registry {
         this.type = type;
         this.host = host;
         this.port = port;
+    }
+
+    public String getUniqueKey() {
+
+        return host + ":" + port;
     }
 }

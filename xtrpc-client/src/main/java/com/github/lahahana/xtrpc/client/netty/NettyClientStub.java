@@ -40,9 +40,6 @@ public final class NettyClientStub extends ClientStub {
 
     private NettyClientStub(NettyHeartBeatInvoker heartBeatInvoker) {
         super(heartBeatInvoker);
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            shutdown();
-        }));
     }
 
     public static NettyClientStub getInstance() {
@@ -58,7 +55,7 @@ public final class NettyClientStub extends ClientStub {
 
     @Override
     protected void initRefService0(Service service) throws ServiceNotAvailableException {
-        Aware aware = new ChannelActiveAware();
+        final Aware aware = new ChannelActiveAware();
         String threadFactoryName = xtServiceThreadPrefix + "-" + service.getUniqueKey();
         EventLoopGroup workerEventGroup = new NioEventLoopGroup(5, new CustomThreadFactory(threadFactoryName));
         Bootstrap bootstrap = new Bootstrap();

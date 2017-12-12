@@ -6,6 +6,7 @@ import com.github.lahahana.xtrpc.common.domain.XTRequest;
 import com.github.lahahana.xtrpc.common.domain.XTResponse;
 import com.github.lahahana.xtrpc.common.exception.ServiceNotFoundException;
 import com.github.lahahana.xtrpc.common.threadfactory.CustomThreadFactory;
+import com.github.lahahana.xtrpc.common.util.CommonUtil;
 import com.github.lahahana.xtrpc.server.ChannelHandlerCtxHolder;
 import com.github.lahahana.xtrpc.server.dispatch.spi.RequestDispatcher;
 import com.github.lahahana.xtrpc.server.stub.ServiceHolder;
@@ -48,12 +49,17 @@ public class XTRequestDispatcher implements RequestDispatcher {
                 xtResponse.setStatusCode(Constraints.STATUS_OK);
                 xtResponse.setResult(result);
 
-            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            } catch (IllegalAccessException | NoSuchMethodException e) {
                 logger.error("service={}.{} not found", interfaceName, method);
                 Throwable th = new ServiceNotFoundException();
                 xtResponse.setStatusCode(Constraints.STATUS_ERROR);
                 xtResponse.setThrowable(th.toString());
-            } catch (Exception e) {
+            } catch (InvocationTargetException e){
+                Throwable targetException = e.getTargetException();
+                logger.error(targetException.getLocalizedMessage());
+                xtResponse.setStatusCode(Constraints.STATUS_METHOD_ERROR);
+                xtResponse.setThrowable(CommonUtil.getStackTraceFromThrowable(targetException));
+            }catch (Exception e) {
                 logger.error(e.getMessage(), e);
                 xtResponse.setStatusCode(Constraints.STATUS_METHOD_ERROR);
                 xtResponse.setThrowable(e.toString());

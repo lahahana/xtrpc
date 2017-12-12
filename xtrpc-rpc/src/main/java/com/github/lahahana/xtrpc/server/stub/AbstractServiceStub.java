@@ -19,4 +19,10 @@ public abstract class AbstractServiceStub implements ServiceStub {
     public Object getServiceRef(){
         return serviceRef;
     };
+
+
+    @Override
+    public void destroy() {
+        shutdown();
+    }
 }

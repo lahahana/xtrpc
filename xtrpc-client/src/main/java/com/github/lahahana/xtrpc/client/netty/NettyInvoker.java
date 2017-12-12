@@ -39,4 +39,9 @@ public final class NettyInvoker extends AbstractInvoker<ChannelHandlerContext> {
     public ChannelHandlerContext channelHandlerContext(){
         return pipe;
     }
+
+    @Override
+    public void destroy() {
+        pipe.close();
+    }
 }

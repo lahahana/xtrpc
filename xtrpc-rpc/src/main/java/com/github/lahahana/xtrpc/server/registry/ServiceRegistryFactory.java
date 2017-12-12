@@ -1,4 +1,4 @@
-package com.github.lahahana.xtrpc.common.registry;
+package com.github.lahahana.xtrpc.server.registry;
 
 import com.github.lahahana.xtrpc.common.config.api.Registry;
 
@@ -8,7 +8,7 @@ public class ServiceRegistryFactory {
         String type = registry.getType();
         switch (type) {
             case "redis":return new RedisServiceRegistry(registry);
-            default: throw new IllegalArgumentException("Unknown registry type:" + type);
+            default: throw new IllegalArgumentException("unknown registry type:" + type);
         }
     }
 }

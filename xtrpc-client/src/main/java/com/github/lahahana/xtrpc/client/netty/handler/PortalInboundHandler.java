@@ -1,20 +1,22 @@
 package com.github.lahahana.xtrpc.client.netty.handler;
 
+import com.github.lahahana.xtrpc.client.netty.NettyInvoker;
 import com.github.lahahana.xtrpc.client.skeleton.Invoker;
 import com.github.lahahana.xtrpc.client.skeleton.InvokerHolder;
 import com.github.lahahana.xtrpc.client.skeleton.InvokerHolderFactory;
-import com.github.lahahana.xtrpc.client.netty.NettyInvoker;
 import com.github.lahahana.xtrpc.common.domain.Aware;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@ChannelHandler.Sharable
 public class PortalInboundHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(PortalInboundHandler.class);
 
-    private static InvokerHolder invokerHolder = InvokerHolderFactory.getInvokerHolder();
+    private static InvokerHolder invokerHolder = InvokerHolderFactory.getInstance().getInvokerHolder("netty");
 
     private final String interfaceClazz;
 
@@ -31,7 +33,7 @@ public class PortalInboundHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         logger.info("channel connected:{} ", ctx.channel());
         invoker = new NettyInvoker(interfaceClazz, ctx);
-        invokerHolder.holdInvoker(invoker);
+        invokerHolder.hold(invoker);
         channelActiveAware.notify(ctx);
         super.channelActive(ctx);
     }
@@ -39,7 +41,7 @@ public class PortalInboundHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         logger.info("channel inactive:{}, {} ", ctx.channel(), invoker);
-        invokerHolder.unholdInvoker(invoker);
+        invokerHolder.unhold(invoker);
         super.channelUnregistered(ctx);
     }
 

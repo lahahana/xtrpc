@@ -7,8 +7,6 @@ public class Reference {
 
     private String interfaceName;
 
-    private Protocol protocol;
-
     private Registry registry;
 
 

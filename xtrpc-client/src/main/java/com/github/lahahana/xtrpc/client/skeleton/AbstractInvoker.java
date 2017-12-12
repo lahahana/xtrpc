@@ -18,6 +18,7 @@ public abstract class AbstractInvoker<T> implements Invoker {
     public AbstractInvoker(String interfaceName, T pipe) {
         this.interfaceName = interfaceName;
         this.pipe = pipe;
+        this.available = true;
     }
 
     protected abstract void invokeXTRequest0(XTRequest request) throws XTRequestInvokeException;

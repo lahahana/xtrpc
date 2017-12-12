@@ -1,6 +1,5 @@
 package com.github.lahahana.xtrpc.client.importer;
 
-import com.github.lahahana.xtrpc.common.config.api.Protocol;
 import com.github.lahahana.xtrpc.common.config.api.Registry;
 import lombok.Getter;
 
@@ -9,13 +8,10 @@ public class RegistryRefService implements RefService {
 
     private Class<?> serviceInterface;
 
-    private Protocol protocol;
-
     private Registry registry;
 
-    public RegistryRefService(Class<?> serviceInterface, Protocol protocol, Registry registry) {
+    public RegistryRefService(Class<?> serviceInterface, Registry registry) {
         this.serviceInterface = serviceInterface;
-        this.protocol = protocol;
         this.registry = registry;
     }
 
@@ -27,7 +23,6 @@ public class RegistryRefService implements RefService {
     /**
      * @return host of registry
      * */
-    @Override
     public String getHost() {
         return registry.getHost();
     }
@@ -35,7 +30,6 @@ public class RegistryRefService implements RefService {
     /**
      * @return port of registry
      * */
-    @Override
     public int getPort() {
         return registry.getPort();
     }

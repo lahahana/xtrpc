@@ -1,14 +1,21 @@
 package com.github.lahahana.xtrpc.client.skeleton;
 
+import com.github.lahahana.xtrpc.common.base.Holder;
+
 import java.util.List;
 
-public interface InvokerHolder {
+public interface InvokerHolder extends Holder<Invoker> {
 
-    public void holdInvoker(Invoker invoker);
+    /**
+     * hold {@linkplain Invoker}, and mark {@linkplain com.github.lahahana.xtrpc.common.domain.Service} as available
+     */
+    public Invoker hold(Invoker invoker);
 
-    public void unholdInvoker(Invoker invoker);
-
-    public List<Invoker> listInvokers();
+    /**
+     * unhold {@linkplain Invoker}, and mark {@linkplain com.github.lahahana.xtrpc.common.domain.Service} as unavailable
+     */
+    public void unhold(Invoker invoker);
 
     public List<Invoker> listInvokersOfInterface(String interfaceName);
+
 }

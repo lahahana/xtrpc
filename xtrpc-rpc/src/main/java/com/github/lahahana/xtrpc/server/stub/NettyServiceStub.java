@@ -2,9 +2,10 @@ package com.github.lahahana.xtrpc.server.stub;
 
 import com.github.lahahana.xtrpc.common.config.api.ServiceConfig;
 import com.github.lahahana.xtrpc.common.domain.Service;
+import com.github.lahahana.xtrpc.common.exception.ServiceRegisterException;
 import com.github.lahahana.xtrpc.common.exception.StubInitializeException;
-import com.github.lahahana.xtrpc.common.registry.ServiceRegistry;
-import com.github.lahahana.xtrpc.common.registry.ServiceRegistryFactory;
+import com.github.lahahana.xtrpc.server.registry.ServiceRegistry;
+import com.github.lahahana.xtrpc.server.registry.ServiceRegistryFactory;
 import com.github.lahahana.xtrpc.common.threadfactory.CustomThreadFactory;
 import com.github.lahahana.xtrpc.common.util.NetworkUtil;
 import com.github.lahahana.xtrpc.server.handler.FunctionRequestInboundHandler;
@@ -19,7 +20,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.nio.ch.Net;
 
 public class NettyServiceStub extends AbstractServiceStub {
 
@@ -63,11 +63,13 @@ public class NettyServiceStub extends AbstractServiceStub {
             serverBootstrap.bind(inetHost, inetPort).sync();
             logger.debug("service stub bind to {}:{}", inetHost, inetPort);
             boolean needRegistry = serviceConfig.getRegistry() == null ? false : true;
-            if(needRegistry) {
+            if (needRegistry) {
                 ServiceRegistry serviceRegistry = ServiceRegistryFactory.getServiceRegistry(serviceConfig.getRegistry());
                 Service service = new Service(serviceConfig.getInterfaceClass().getName(), serviceConfig.getProtocol().getName(), NetworkUtil.getLocalHostInetAddress().getHostName(), serviceConfig.getProtocol().getPort());
                 serviceRegistry.register(service);
             }
+        } catch (ServiceRegisterException e) {
+            logger.error("fail to register service: serviceConfig={}", serviceConfig, e);
         } catch (Exception e) {
             shutdown();
             throw new StubInitializeException("service stub fail to initialize", e);
@@ -79,4 +81,5 @@ public class NettyServiceStub extends AbstractServiceStub {
         bossEventGroup.shutdownGracefully();
         workerEventGroup.shutdownGracefully();
     }
+
 }

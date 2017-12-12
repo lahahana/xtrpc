@@ -1,7 +1,7 @@
 package com.github.lahahana.xtrpc.common.exception;
 
 /**
- * Used when Service not found in service register center
+ * Be thrown when {@link com.github.lahahana.xtrpc.common.domain.Service} not found in remote {@link com.github.lahahana.xtrpc.server.registry.ServiceRegistry} cent
  * */
 public class ServiceNotFoundException extends Exception {
 
@@ -9,12 +9,16 @@ public class ServiceNotFoundException extends Exception {
         super();
     }
 
-    public ServiceNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
     public ServiceNotFoundException(String message) {
         super(message);
+    }
+
+    public ServiceNotFoundException(Throwable cause) {
+        super(cause);
+    }
+
+    public ServiceNotFoundException(String message, Throwable cause) {
+        super(message, cause);
     }
 }
 

@@ -29,9 +29,8 @@ public class RegistryRefServiceClient {
 
     public static void main(String[] args) throws Exception {
         Application application = new Application("DirectRefStyleClient");
-        Protocol xtProtocol = new XTProtocol();
         Registry registry = new Registry("redis", redisRegistryAddress, 6379);
-        RegistryRefService registryRefService = new RegistryRefService(AddressService.class, xtProtocol, registry);
+        RegistryRefService registryRefService = new RegistryRefService(AddressService.class, registry);
         XTServiceImporter xtServiceImporter = new XTServiceImporter.Builder()
                 .setApplication(application)
                 .addRegistryRefService(registryRefService)

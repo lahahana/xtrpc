@@ -12,13 +12,13 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Dispatch response to specific receiver
  * */
-public class XTResponseDispatcher {
+public final class XTResponseDispatcher {
 
     private static final Logger logger = LoggerFactory.getLogger(XTResponseDispatcher.class);
 
     private static volatile XTResponseDispatcher instance;
 
-    private Map<Long, XTResponseAware> registeredXTResponseAware = new ConcurrentHashMap<>();
+    private Map<Long, XTResponseAware> registeredXTResponseAwareMap = new ConcurrentHashMap<>();
 
     private XTResponseDispatcher() {
         super();
@@ -37,13 +37,13 @@ public class XTResponseDispatcher {
 
     public XTResponseAware register(XTRequest request) {
         XTResponseAware xtResponseAware = new XTResponseAware(request.getRequestId());
-        registeredXTResponseAware.put(request.getRequestId(), xtResponseAware);
+        registeredXTResponseAwareMap.put(request.getRequestId(), xtResponseAware);
         return xtResponseAware;
     }
 
     public void dispatch(XTResponse response) {
         logger.debug("dispatch XTResponse: requestId={}", response.getRequestId());
-        XTResponseAware responseAware = registeredXTResponseAware.remove(response.getRequestId());
+        XTResponseAware responseAware = registeredXTResponseAwareMap.remove(response.getRequestId());
         responseAware.notify(response);
     }
 
