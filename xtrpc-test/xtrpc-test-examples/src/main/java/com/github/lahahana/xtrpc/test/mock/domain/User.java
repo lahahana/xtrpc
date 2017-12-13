@@ -1,4 +1,4 @@
-package com.github.lahahana.xtrpc.test.domain;
+package com.github.lahahana.xtrpc.test.mock.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

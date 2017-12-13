@@ -20,7 +20,7 @@ public class XTResponseEncoder extends MessageToByteEncoder<XTResponse> {
 
     @Override
     protected void encode(ChannelHandlerContext ctx, XTResponse msg, ByteBuf out) throws Exception {
-        logger.debug("prepare encode:{}", msg.toString());
+//        logger.debug("prepare encode:{}", msg.toString());
         out.writeByte(MessageConstraints.XTRESPONSE_HEAD);
         codecUtil.encode(out, msg);
     }

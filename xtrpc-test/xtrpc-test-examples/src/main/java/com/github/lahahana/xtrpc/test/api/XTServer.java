@@ -3,12 +3,12 @@ package com.github.lahahana.xtrpc.test.api;
 import com.github.lahahana.xtrpc.common.config.api.Application;
 import com.github.lahahana.xtrpc.common.config.XTProtocol;
 import com.github.lahahana.xtrpc.common.config.api.Registry;
-import com.github.lahahana.xtrpc.common.util.NetworkUtil;
 import com.github.lahahana.xtrpc.server.exporter.XTServiceExporter;
-import com.github.lahahana.xtrpc.test.service.AddressService;
-import com.github.lahahana.xtrpc.test.service.UserService;
-import com.github.lahahana.xtrpc.test.service.impl.AddressServiceImpl;
-import com.github.lahahana.xtrpc.test.service.impl.UserServiceImpl;
+import com.github.lahahana.xtrpc.test.mock.service.AddressService;
+import com.github.lahahana.xtrpc.test.mock.service.ExceptionService;
+import com.github.lahahana.xtrpc.test.mock.service.UserService;
+import com.github.lahahana.xtrpc.test.mock.service.impl.ExceptionServiceImpl;
+import com.github.lahahana.xtrpc.test.mock.service.impl.UserServiceImpl;
 
 public class XTServer {
 
@@ -21,7 +21,8 @@ public class XTServer {
                                 .setApplication(new Application("ServerWithXTAppContext"))
                                 .setProtocol(protocol)
                                 .setRegistry(registry)
-                                .setService(AddressService.class, new AddressServiceImpl())
+//                                .setService(AddressService.class, new AddressServiceImpl())
+                                .setService(ExceptionService.class, new ExceptionServiceImpl())
                                 .build()
                                 .doExport();
 

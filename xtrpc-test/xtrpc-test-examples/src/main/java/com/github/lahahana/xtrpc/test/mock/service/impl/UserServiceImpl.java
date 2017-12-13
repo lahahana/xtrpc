@@ -1,7 +1,7 @@
-package com.github.lahahana.xtrpc.test.service.impl;
+package com.github.lahahana.xtrpc.test.mock.service.impl;
 
-import com.github.lahahana.xtrpc.test.domain.User;
-import com.github.lahahana.xtrpc.test.service.UserService;
+import com.github.lahahana.xtrpc.test.mock.domain.User;
+import com.github.lahahana.xtrpc.test.mock.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -25,7 +25,7 @@ public class XTResponseInboundHandler extends SimpleChannelInboundHandler<XTResp
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, XTResponse msg) throws Exception {
-        logger.debug("receive response: XTResponse={}", msg);
+//        logger.debug("receive response: XTResponse={}", msg);
         responseDispatcher.dispatch(msg);
     }
 

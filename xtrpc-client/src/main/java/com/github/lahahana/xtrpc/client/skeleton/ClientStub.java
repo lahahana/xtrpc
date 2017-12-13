@@ -15,6 +15,7 @@ import com.github.lahahana.xtrpc.common.domain.XTResponse;
 import com.github.lahahana.xtrpc.common.domain.XTResponseAware;
 import com.github.lahahana.xtrpc.common.exception.*;
 import com.github.lahahana.xtrpc.common.stub.XTStub;
+import com.github.lahahana.xtrpc.common.util.CommonUtil;
 import com.github.lahahana.xtrpc.common.util.NetworkUtil;
 import com.github.lahahana.xtrpc.common.util.Tuple;
 import org.slf4j.Logger;
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -153,14 +155,7 @@ public abstract class ClientStub implements XTStub {
             if (code == Constraints.STATUS_OK) {
                 result = xtResponse.getResult();
             } else if (code == Constraints.STATUS_METHOD_ERROR) {
-                Class<?>[] exceptionTypes = method.getExceptionTypes();
-                if(exceptionTypes == null || exceptionTypes.length == 0) {
-                    //it is a runtime exception
-                    RuntimeException exception = new RuntimeException(xtResponse.getThrowable());
-                    throw exception;
-                }else {
-                    //is a predefined exception
-                }
+                handleMethodException(method, xtResponse.getThrowableClass(), xtResponse.getThrowable());
             } else if (code == Constraints.STATUS_ERROR) {
                 logger.debug("Fail to invoke request by invoker={}", invoker);
                 invokerHolder.unhold(invoker);
@@ -174,6 +169,20 @@ public abstract class ClientStub implements XTStub {
 
         }
         return result;
+    }
+
+    private void handleMethodException(Method method, String throwableClass, String throwableInfo) throws Exception {
+        Class<?>[] exceptionTypes = method.getExceptionTypes();
+        String clazzName = throwableClass;
+        if(exceptionTypes == null || exceptionTypes.length == 0) {
+            //it is a runtime exception and not defined on method
+            throw new RuntimeException(throwableInfo);
+        }
+        //MUST TAKE INHERITED EXCEPTION INTO CONSIDERATION
+        Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(clazzName);
+        Optional<? extends Class<?>> opt = CommonUtil.findMatchedExceptionType(exceptionTypes, clazz);
+        Class<?> exceptionType = opt.orElseThrow(() -> new RuntimeException(throwableInfo));
+        throw (Exception)exceptionType.getConstructor(String.class).newInstance(throwableInfo);
     }
 
     private Object failOverRetry(InvokerHolder invokerHolder, List<Invoker> invokers, XTRequest xtRequest, Method method) throws NoAvailableServicesException, Exception {
@@ -190,9 +199,7 @@ public abstract class ClientStub implements XTStub {
                     if (code == Constraints.STATUS_OK) {
                         return xtResponse.getResult();
                     } else if (code == Constraints.STATUS_METHOD_ERROR) {
-                        Exception exception = (Exception) method.getExceptionTypes()[0].newInstance();
-                        exception.initCause(new Throwable(xtResponse.getThrowable()));
-                        throw exception;
+                        handleMethodException(method, xtResponse.getThrowableClass(), xtResponse.getThrowable());
                     } else if (code == Constraints.STATUS_ERROR) {
                         invokerHolder.unhold(invoker0);
                         continue;

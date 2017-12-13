@@ -45,7 +45,7 @@ public class XTRequestDispatcher implements RequestDispatcher {
             try {
                 Method targetMethod = serviceRef.getClass().getMethod(method, argsType);
                 Object result = targetMethod.invoke(serviceRef, args);
-                logger.info("execution result:{}", result);
+                logger.debug("execution result:{}", result);
                 xtResponse.setStatusCode(Constraints.STATUS_OK);
                 xtResponse.setResult(result);
 
@@ -53,16 +53,19 @@ public class XTRequestDispatcher implements RequestDispatcher {
                 logger.error("service={}.{} not found", interfaceName, method);
                 Throwable th = new ServiceNotFoundException();
                 xtResponse.setStatusCode(Constraints.STATUS_ERROR);
-                xtResponse.setThrowable(th.toString());
+                xtResponse.setThrowableClass(ServiceNotFoundException.class.getName());
+                xtResponse.setThrowable(CommonUtil.getStackTraceFromThrowable(th));
             } catch (InvocationTargetException e){
                 Throwable targetException = e.getTargetException();
-                logger.error(targetException.getLocalizedMessage());
+                logger.error(targetException.getClass().getName());
                 xtResponse.setStatusCode(Constraints.STATUS_METHOD_ERROR);
+                xtResponse.setThrowableClass(targetException.getClass().getName());
                 xtResponse.setThrowable(CommonUtil.getStackTraceFromThrowable(targetException));
             }catch (Exception e) {
                 logger.error(e.getMessage(), e);
                 xtResponse.setStatusCode(Constraints.STATUS_METHOD_ERROR);
-                xtResponse.setThrowable(e.toString());
+                xtResponse.setThrowableClass(e.getClass().getName());
+                xtResponse.setThrowable(CommonUtil.getStackTraceFromThrowable(e));
             } finally {
                 channel.write(MessageConstraints.XTRESPONSE_HEAD);
                 channel.writeAndFlush(xtResponse);

@@ -17,6 +17,8 @@ public class XTResponse implements Serializable {
 
     private Object result;
 
+    private String throwableClass;
+
     private String throwable;
 
     public XTResponse(long requestId) {
