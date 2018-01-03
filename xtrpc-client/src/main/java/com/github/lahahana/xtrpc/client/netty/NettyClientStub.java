@@ -8,6 +8,11 @@ import com.github.lahahana.xtrpc.client.netty.handler.codec.FunctionRequestEncod
 import com.github.lahahana.xtrpc.client.netty.handler.codec.ResponseDecoder;
 import com.github.lahahana.xtrpc.client.netty.handler.codec.XTRequestEncoder;
 import com.github.lahahana.xtrpc.client.skeleton.ClientStub;
+import com.github.lahahana.xtrpc.client.skeleton.InvokerHolder;
+import com.github.lahahana.xtrpc.client.skeleton.ScheduledHeartBeatInvoker;
+import com.github.lahahana.xtrpc.common.codec.CodecUtil;
+import com.github.lahahana.xtrpc.common.codec.CodecUtilFactory;
+import com.github.lahahana.xtrpc.common.constant.Constraints;
 import com.github.lahahana.xtrpc.common.domain.Aware;
 import com.github.lahahana.xtrpc.common.domain.ChannelActiveAware;
 import com.github.lahahana.xtrpc.common.domain.Service;
@@ -38,15 +43,14 @@ public final class NettyClientStub extends ClientStub {
 
     private Object lock = new Object();
 
-    private NettyClientStub(NettyHeartBeatInvoker heartBeatInvoker) {
-        super(heartBeatInvoker);
+    private NettyClientStub() {
     }
 
     public static NettyClientStub getInstance() {
         if (instance == null) {
             synchronized (NettyClientStub.class) {
                 if (instance == null) {
-                    instance = new NettyClientStub(new NettyHeartBeatInvoker());
+                    instance = new NettyClientStub();
                 }
             }
         }
@@ -55,6 +59,7 @@ public final class NettyClientStub extends ClientStub {
 
     @Override
     protected void initRefService0(Service service) throws ServiceNotAvailableException {
+        final CodecUtil codecUtil = CodecUtilFactory.getCodecUtil(service.getProtocol());
         final Aware aware = new ChannelActiveAware();
         String threadFactoryName = xtServiceThreadPrefix + "-" + service.getUniqueKey();
         EventLoopGroup workerEventGroup = new NioEventLoopGroup(5, new CustomThreadFactory(threadFactoryName));
@@ -75,8 +80,8 @@ public final class NettyClientStub extends ClientStub {
                                 .addLast(new XTResponseInboundHandler(service.getServiceInterface()))
                                 .addLast(new PortalInboundHandler(service.getServiceInterface(), aware))
                                 .addLast(new FunctionResponseInboundHandler())
-                                .addLast(new FunctionRequestEncoder())
-                                .addLast(new XTRequestEncoder())
+                                .addLast(new FunctionRequestEncoder(codecUtil))
+                                .addLast(new XTRequestEncoder(codecUtil))
                                 .addLast(new XTClientOutboundPortalHandler(service.getServiceInterface()))
                         ;
                     }
@@ -106,6 +111,16 @@ public final class NettyClientStub extends ClientStub {
         } catch (TimeoutException e) {
             throw new ServiceNotAvailableException(e);
         }
+    }
+
+    @Override
+    protected InvokerHolder getInvokerHolder() {
+        return invokerHolderFactory.getInvokerHolder(Constraints.Transporter.NETTY);
+    }
+
+    @Override
+    protected ScheduledHeartBeatInvoker getScheduledHeartBeatInvoker() {
+        return new NettyHeartBeatInvoker();
     }
 
     @Override

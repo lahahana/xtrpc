@@ -1,6 +1,7 @@
 package com.github.lahahana.xtrpc.client.skeleton;
 
 import com.github.lahahana.xtrpc.common.base.Destroyable;
+import com.github.lahahana.xtrpc.common.constant.Constraints;
 import com.github.lahahana.xtrpc.common.threadfactory.CustomThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,7 @@ public abstract class ScheduledHeartBeatInvoker extends TimerTask implements Des
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(3, new CustomThreadFactory("heartBeatThread"));
 
-    private final InvokerHolder invokerHolder = InvokerHolderFactory.getInstance().getInvokerHolder("netty");
+    private final InvokerHolder invokerHolder = InvokerHolderFactory.getInstance().getInvokerHolder(Constraints.Transporter.NETTY);
 
     private Timer timer;
 

@@ -14,11 +14,15 @@ public class ResponseDecoder extends ByteToMessageDecoder {
 
     private static final Logger logger = LoggerFactory.getLogger(ResponseDecoder.class);
 
-    private static CodecUtil codecUtil = CodecUtilFactory.getCodecUtil();
+    private CodecUtil codecUtil;
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
         if (in.isReadable()) {
+            byte codecType = in.readByte();
+            //get corresponding codec util by msg codec type at first time
+            codecUtil = codecUtil == null ? CodecUtilFactory.getCodecUtil(codecType) : codecUtil;
+
             byte msgType = in.readByte();
             if (in.readableBytes() < codecUtil.getByteNumOfDataLengthMark()) {
                 return;

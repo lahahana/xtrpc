@@ -2,10 +2,11 @@ package com.github.lahahana.xtrpc.client.skeleton;
 
 import com.github.lahahana.xtrpc.client.netty.NettyInvokerHolder;
 import com.github.lahahana.xtrpc.common.base.SingletonDestroyableFactory;
-import com.github.lahahana.xtrpc.common.config.api.Protocol;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.github.lahahana.xtrpc.common.constant.Constraints.Transporter;
 
 public class InvokerHolderFactory extends SingletonDestroyableFactory {
 
@@ -24,14 +25,10 @@ public class InvokerHolderFactory extends SingletonDestroyableFactory {
         return instance;
     }
 
-    public InvokerHolder getInvokerHolder(Protocol protocol) {
-        return getInvokerHolder(protocol.getTransporter());
-    }
-
-    public synchronized InvokerHolder getInvokerHolder(String transporter){
+    public synchronized InvokerHolder getInvokerHolder(Transporter transporter) {
         InvokerHolder invokerHolder = null;
         switch (transporter) {
-            case "netty":
+            case NETTY:
                 invokerHolder = NettyInvokerHolder.getInstance();
                 invokerHolders.add(invokerHolder);
                 break;

@@ -35,27 +35,28 @@ public abstract class ClientStub implements XTStub {
 
     private static final Logger logger = LoggerFactory.getLogger(ClientStub.class);
 
+    protected static ServiceDiscovererFactory serviceDiscovererFactory = ServiceDiscovererFactory.getInstance();
+
+    protected static InvokerHolderFactory invokerHolderFactory = InvokerHolderFactory.getInstance();
+
     protected volatile boolean online = true;
 
     private final AtomicLong requestIdCounter = new AtomicLong();
 
     private XTResponseDispatcher responseDispatcher = XTResponseDispatcher.getInstance();
 
-    private Map<String, Tuple<Lock, Boolean>> initializationLockMap = new ConcurrentHashMap<>();//true means connection established
-
-    private ServiceDiscovererFactory serviceDiscovererFactory = ServiceDiscovererFactory.getInstance();
+    private Map<String, Tuple<Lock, Boolean>> initializationLockMap = new ConcurrentHashMap<>();//true means connection already established
 
     private LoadBalancer loadBalancer = new RandomLoadBalancer();
 
     private final ServiceHolder serviceHolder = ServiceHolder.getInstance();
 
-    private final InvokerHolderFactory invokerHolderFactory = InvokerHolderFactory.getInstance();
+    private final InvokerHolder invokerHolder = getInvokerHolder();
 
-    private ScheduledHeartBeatInvoker scheduledHeartBeatInvoker;
+    private final ScheduledHeartBeatInvoker scheduledHeartBeatInvoker = getScheduledHeartBeatInvoker();
 
 
-    public ClientStub(ScheduledHeartBeatInvoker scheduledHeartBeatInvoker) {
-        this.scheduledHeartBeatInvoker = scheduledHeartBeatInvoker;
+    public ClientStub() {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
@@ -123,7 +124,7 @@ public abstract class ClientStub implements XTStub {
                 initRefService(service);
             } catch (ServiceNotAvailableException e) {
                 logger.warn("service not available, refService={}", service);
-                //hint: partial ref service unavailable tolerance
+                //hint: partial registry ref service unavailable tolerance
                 int unavailableServiceCount = unavailableServiceCounter.incrementAndGet();
                 if(unavailableServiceCount == services.size()) {
                     throw new NoAvailableServicesException();
@@ -138,7 +139,6 @@ public abstract class ClientStub implements XTStub {
             throw new RejectInvokeException("client stub offline");
         }
         XTRequest xtRequest = buildXTRequest(method, args);
-        InvokerHolder invokerHolder = invokerHolderFactory.getInvokerHolder(protocol);
         List<Invoker> invokers = invokerHolder.listInvokersOfInterface(xtRequest.getInterfaceName());
         //TO-DO add LoadBalance solution support, be sure the service connection is still alive
         Invoker invoker = loadBalancer.selectInvoker(invokers);
@@ -221,6 +221,10 @@ public abstract class ClientStub implements XTStub {
      * Sub class need to implement this method to fulfill remote service initiation logic
      * */
     protected abstract void initRefService0(Service service) throws ServiceNotAvailableException;
+
+    protected abstract InvokerHolder getInvokerHolder();
+
+    protected abstract ScheduledHeartBeatInvoker getScheduledHeartBeatInvoker();
 
     public abstract void shutdownRefService(Service service);
 

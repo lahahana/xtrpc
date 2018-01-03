@@ -1,14 +1,15 @@
 package com.github.lahahana.xtrpc.client.importer;
 
-import com.github.lahahana.xtrpc.client.skeleton.ClientStubFactory;
 import com.github.lahahana.xtrpc.client.proxy.XTRpcClientProxy;
 import com.github.lahahana.xtrpc.client.skeleton.ClientStub;
+import com.github.lahahana.xtrpc.client.skeleton.ClientStubFactory;
 import com.github.lahahana.xtrpc.common.config.api.Application;
 import com.github.lahahana.xtrpc.common.config.api.Protocol;
 import com.github.lahahana.xtrpc.common.domain.Service;
 import com.github.lahahana.xtrpc.common.exception.NoAvailableServicesException;
 import com.github.lahahana.xtrpc.common.exception.ServiceNotAvailableException;
 import com.github.lahahana.xtrpc.common.exception.ServiceNotFoundException;
+import com.github.lahahana.xtrpc.common.util.AssertsUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,13 +17,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Used for import remote ref service
+ * Used for import remote ref service in direct ref style or registry ref style
  */
 public final class XTServiceImporter {
 
     private Application application;
     private List<DirectRefService> directRefServices;
-    private List<RegistryRefService> registryRefServices = new ArrayList<>();
+    private List<RegistryRefService> registryRefServices;
     private boolean ignorePartialOffline;
     private volatile boolean purge;
 
@@ -37,6 +38,7 @@ public final class XTServiceImporter {
         ClientStub stub = ClientStubFactory.getInstance().getClientStub(application.getProtocol());
         Map<String, Integer> sameRefServiceCountMap = new HashMap<>();
 
+        //do statistics of direct ref service
         for (DirectRefService directRefService : directRefServices) {
             final String interfaceName = directRefService.getInterface().getName();
             if (sameRefServiceCountMap.containsKey(interfaceName)) {
@@ -54,7 +56,7 @@ public final class XTServiceImporter {
             try {
                 stub.initRefService(service);
             } catch (ServiceNotAvailableException e) {
-                //TO-DO partial ref service unavailable tolerance
+                //TO-DO performance enhance: partial direct ref service unavailable tolerance
                 if (ignorePartialOffline) {
                     synchronized (unavailableRefServiceCountMap) {
                         Integer count = unavailableRefServiceCountMap.get(service.getServiceInterface());
@@ -69,7 +71,6 @@ public final class XTServiceImporter {
                             } else {
                                 throw new RuntimeException(e);
                             }
-
                         }
                     }
                 }
@@ -117,14 +118,6 @@ public final class XTServiceImporter {
         }
 
         /**
-         * @param ignorePartialOffline will ignore partial direct ref service unavailable if set to true, default false
-         */
-        public Builder setIgnorePartialOffline(boolean ignorePartialOffline) {
-            this.ignorePartialOffline = ignorePartialOffline;
-            return this;
-        }
-
-        /**
          * Used for direct ref service , skip service discovery through registry
          */
         public Builder addDirectRefService(DirectRefService service) {
@@ -135,7 +128,16 @@ public final class XTServiceImporter {
             return this;
         }
 
+        /**
+         * @param ignorePartialOffline will ignore partial direct ref service unavailable if set to true, default false
+         */
+        public Builder setIgnorePartialOffline(boolean ignorePartialOffline) {
+            this.ignorePartialOffline = ignorePartialOffline;
+            return this;
+        }
+
         public XTServiceImporter build() {
+            AssertsUtil.ensureNotNull("application", application);
             return new XTServiceImporter(this);
         }
 

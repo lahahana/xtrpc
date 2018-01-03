@@ -4,8 +4,6 @@ import com.github.lahahana.xtrpc.common.config.api.ServiceConfig;
 import com.github.lahahana.xtrpc.common.domain.Service;
 import com.github.lahahana.xtrpc.common.exception.ServiceRegisterException;
 import com.github.lahahana.xtrpc.common.exception.StubInitializeException;
-import com.github.lahahana.xtrpc.server.registry.ServiceRegistry;
-import com.github.lahahana.xtrpc.server.registry.ServiceRegistryFactory;
 import com.github.lahahana.xtrpc.common.threadfactory.CustomThreadFactory;
 import com.github.lahahana.xtrpc.common.util.NetworkUtil;
 import com.github.lahahana.xtrpc.server.handler.FunctionRequestInboundHandler;
@@ -14,6 +12,8 @@ import com.github.lahahana.xtrpc.server.handler.XTServerOutboundPortalHandler;
 import com.github.lahahana.xtrpc.server.handler.codec.FunctionResponseEncoder;
 import com.github.lahahana.xtrpc.server.handler.codec.RequestDecoder;
 import com.github.lahahana.xtrpc.server.handler.codec.XTResponseEncoder;
+import com.github.lahahana.xtrpc.server.registry.ServiceRegistry;
+import com.github.lahahana.xtrpc.server.registry.ServiceRegistryFactory;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -33,6 +33,11 @@ public class NettyServiceStub extends AbstractServiceStub {
         super(serviceConfig);
     }
 
+    /**
+     * Listen on specific port to receive request, and try to register service to remote registry if need,
+     *
+     * @Throws {@linkplain StubInitializeException}
+     */
     @Override
     public void bootstrap() throws StubInitializeException {
         bossEventGroup = new NioEventLoopGroup(1, new CustomThreadFactory("xtBossNettyIOThread", false));
@@ -62,6 +67,7 @@ public class NettyServiceStub extends AbstractServiceStub {
             int inetPort = serviceConfig.getProtocol().getPort();
             serverBootstrap.bind(inetHost, inetPort).sync();
             logger.debug("service stub bind to {}:{}", inetHost, inetPort);
+
             boolean needRegistry = serviceConfig.getRegistry() == null ? false : true;
             if (needRegistry) {
                 ServiceRegistry serviceRegistry = ServiceRegistryFactory.getServiceRegistry(serviceConfig.getRegistry());

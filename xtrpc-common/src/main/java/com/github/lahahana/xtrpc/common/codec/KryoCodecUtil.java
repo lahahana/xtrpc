@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.pool.KryoPool;
+import com.github.lahahana.xtrpc.common.constant.MessageConstraints;
 import com.github.lahahana.xtrpc.common.serialization.KryoPoolFactory;
 import io.netty.buffer.ByteBuf;
 
@@ -27,6 +28,8 @@ public class KryoCodecUtil implements CodecUtil {
         byte[] bytesOfMsg = outputStream.toByteArray();
         //write data length ahead
         byteBuf.writeInt(bytesOfMsg.length);
+        //write codec type ahead
+        byteBuf.writeByte(MessageConstraints.CODEC_KRYO);
         byteBuf.writeBytes(bytesOfMsg);
 
     }

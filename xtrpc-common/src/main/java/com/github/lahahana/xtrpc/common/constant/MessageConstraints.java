@@ -11,4 +11,6 @@ public class MessageConstraints {
     public static final byte FUNCTION_RESPONSE_HEAD = 4;
 
     public static final byte FUNCTION_HEART_BEAT_HEAD = 5;
+
+    public static final byte CODEC_KRYO = 1;
 }

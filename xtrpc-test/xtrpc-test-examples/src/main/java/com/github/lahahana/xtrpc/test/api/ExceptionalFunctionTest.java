@@ -22,11 +22,11 @@ import java.util.concurrent.Executors;
 @RunWith(JUnit4.class)
 public class ExceptionalFunctionTest {
 
-    static Logger logger = LoggerFactory.getLogger(ExceptionalFunctionTest.class);
-    static String address = NetworkUtil.getLocalHostInetAddress().getHostAddress() + ":" + 8088;
-    static String address2 = NetworkUtil.getLocalHostInetAddress().getHostAddress() + ":" + 8089;
-    static ExceptionService exceptionService;
-    static ExecutorService testExecutors = Executors.newFixedThreadPool(5);
+    private static Logger logger = LoggerFactory.getLogger(ExceptionalFunctionTest.class);
+    private static String address = NetworkUtil.getLocalHostInetAddress().getHostAddress() + ":" + 8088;
+    private static String address2 = NetworkUtil.getLocalHostInetAddress().getHostAddress() + ":" + 8089;
+    private static ExceptionService exceptionService;
+    private static ExecutorService testExecutors = Executors.newFixedThreadPool(5);
 
     @BeforeClass
     public static void beforeSetup() {

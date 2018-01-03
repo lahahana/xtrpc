@@ -2,8 +2,23 @@ package com.github.lahahana.xtrpc.common.codec;
 
 public class CodecUtilFactory {
 
-    public static CodecUtil getCodecUtil() {
-        //TO-DO get codec util by serialization scheme
-        return new KryoCodecUtil();
+    private static KryoCodecUtil kryoCodecUtil = new KryoCodecUtil();
+
+    public static CodecUtil getCodecUtil(String codec) {
+        switch (codec) {
+            case "kryo":
+                return kryoCodecUtil;
+            default:
+                throw new IllegalArgumentException("unknown codec type" + codec);
+        }
+    }
+
+    public static CodecUtil getCodecUtil(byte codec) {
+        switch (codec) {
+            case 1:
+                return kryoCodecUtil;
+            default:
+                throw new IllegalArgumentException("unknown codec type" + codec);
+        }
     }
 }

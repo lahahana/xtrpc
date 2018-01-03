@@ -2,7 +2,12 @@ package com.github.lahahana.xtrpc.common.domain;
 
 import com.github.lahahana.xtrpc.common.exception.TimeoutException;
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
+
 public abstract class AbstractAware<R> implements Aware<R> {
+
+    private Thread waiter;
 
     private R msg;
 
@@ -13,21 +18,31 @@ public abstract class AbstractAware<R> implements Aware<R> {
 
     @Override
     public R aware(long timeout) throws TimeoutException {
-        synchronized (this) {
-            try {
-                this.wait(timeout);
-            } catch (InterruptedException e) {
-                throw new TimeoutException();
-            }
+        waiter = Thread.currentThread();
+        LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(timeout));
+//        if(waiter.isInterrupted()) {
+//            throw new InterruptedException();
+//        }
+        if (msg == null) {
+            throw new TimeoutException();
         }
+//        synchronized (this) {
+//            try {
+//                this.wait(timeout);
+//            } catch (InterruptedException e) {
+//                throw new TimeoutException();
+//            }
+//        }
         return msg;
     }
 
     @Override
     public void notify(R msg) {
         this.msg = msg;
-        synchronized (this) {
-            notify();
-        }
+        LockSupport.unpark(waiter);
+        waiter = null;
+//        synchronized (this) {
+//            notify();
+//        }
     }
 }

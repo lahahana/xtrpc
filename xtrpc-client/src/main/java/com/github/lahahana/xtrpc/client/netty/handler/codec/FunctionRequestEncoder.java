@@ -1,7 +1,6 @@
 package com.github.lahahana.xtrpc.client.netty.handler.codec;
 
 import com.github.lahahana.xtrpc.common.codec.CodecUtil;
-import com.github.lahahana.xtrpc.common.codec.CodecUtilFactory;
 import com.github.lahahana.xtrpc.common.constant.MessageConstraints;
 import com.github.lahahana.xtrpc.common.domain.FunctionRequest;
 import io.netty.buffer.ByteBuf;
@@ -11,7 +10,11 @@ import io.netty.handler.codec.MessageToByteEncoder;
 
 public class FunctionRequestEncoder extends MessageToByteEncoder<FunctionRequest> {
 
-    private static CodecUtil codecUtil = CodecUtilFactory.getCodecUtil();
+    private CodecUtil codecUtil;
+
+    public FunctionRequestEncoder(CodecUtil codecUtil) {
+        this.codecUtil = codecUtil;
+    }
 
     @Override
     protected void encode(ChannelHandlerContext ctx, FunctionRequest msg, ByteBuf out) throws Exception {

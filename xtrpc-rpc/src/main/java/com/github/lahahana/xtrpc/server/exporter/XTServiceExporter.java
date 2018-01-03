@@ -1,39 +1,37 @@
 package com.github.lahahana.xtrpc.server.exporter;
 
+import com.github.lahahana.xtrpc.common.config.XTProtocol;
 import com.github.lahahana.xtrpc.common.config.api.Application;
 import com.github.lahahana.xtrpc.common.config.api.Protocol;
 import com.github.lahahana.xtrpc.common.config.api.Registry;
 import com.github.lahahana.xtrpc.common.config.api.ServiceConfig;
+import com.github.lahahana.xtrpc.common.exception.ServiceExportException;
 import com.github.lahahana.xtrpc.common.exception.StubInitializeException;
+import com.github.lahahana.xtrpc.common.util.AssertsUtil;
 import com.github.lahahana.xtrpc.server.stub.NettyServiceStub;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class XTServiceExporter {
 
-    private Application application;
-    private Protocol protocol;
-    private List<ServiceConfig> serviceConfigs;
+    private ServiceConfig serviceConfig;
 
     private XTServiceExporter(Builder builder) {
-        this.application = builder.application;
-        this.protocol = builder.protocol;
-        this.serviceConfigs = builder.serviceConfigs;
+        serviceConfig.setApplication(builder.application);
+        serviceConfig.setProtocol(builder.protocol);
+        serviceConfig.setInterfaceClass(builder.interfaceClass);
+        serviceConfig.setRef(builder.serviceRef);
+        serviceConfig.setRegistry(builder.registry);
     }
 
-    public void doExport() {
-        serviceConfigs.parallelStream().forEach((service) -> {
-            NettyServiceStub stub = new NettyServiceStub(service);
-            try {
-                stub.bootstrap();
-            } catch (StubInitializeException e) {
-                e.printStackTrace();
-            }
-        });
+    public void doExport() throws ServiceExportException {
+        NettyServiceStub stub = new NettyServiceStub(serviceConfig);
+        try {
+            stub.bootstrap();
+        } catch (StubInitializeException e) {
+            throw new ServiceExportException(e);
+        }
     }
 
-    public static Builder builder(){
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -42,7 +40,8 @@ public class XTServiceExporter {
         private Application application;
         private Protocol protocol;
         private Registry registry;
-        private List<ServiceConfig> serviceConfigs = new ArrayList<>();
+        private Class<?> interfaceClass;
+        private Object serviceRef;
 
         public Builder() {
         }
@@ -59,7 +58,7 @@ public class XTServiceExporter {
 
         /**
          * Service will not register to service registry if {@link Registry} not set
-         * */
+         */
         public Builder setRegistry(Registry registry) {
             this.registry = registry;
             return this;
@@ -67,19 +66,20 @@ public class XTServiceExporter {
 
         /**
          * @param interfaceClass the interface of service which you want to established as remote ref service
-         * */
-        public Builder setService(Class<?> interfaceClass, Object service) {
-            ServiceConfig serviceConfig = new ServiceConfig();
-            serviceConfig.setApplication(application);
-            serviceConfig.setProtocol(protocol);
-            serviceConfig.setRegistry(registry);
-            serviceConfig.setRef(service);
-            serviceConfig.setInterfaceClass(interfaceClass);
-            this.serviceConfigs.add(serviceConfig);
+         */
+        public Builder setService(Class<?> interfaceClass, Object serviceRef) {
+            if (!serviceRef.getClass().isAssignableFrom(interfaceClass))
+                throw new IllegalArgumentException("service ref must implement interfaceClass");
             return this;
         }
 
         public XTServiceExporter build() {
+            AssertsUtil.ensureNotNull("application", application);
+            AssertsUtil.ensureNotNull("interfaceClass", interfaceClass);
+            AssertsUtil.ensureNotNull("serviceRef", serviceRef);
+            if (protocol == null) {
+                protocol = new XTProtocol();
+            }
             return new XTServiceExporter(this);
         }
 

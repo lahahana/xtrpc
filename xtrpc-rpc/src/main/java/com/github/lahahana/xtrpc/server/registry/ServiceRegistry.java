@@ -13,7 +13,7 @@ public interface ServiceRegistry extends Closeable {
     public void register(Service service)  throws ServiceRegisterException;
 
     /**
-     * Sub class must not throw any exception even service unregister fail
+     * subclass must not throw any exception even service unregister fail
      * */
     public boolean unregister(Service service) ;
 

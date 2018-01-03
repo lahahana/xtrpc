@@ -11,12 +11,14 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.github.lahahana.xtrpc.common.constant.Constraints.Transporter;
+
 @ChannelHandler.Sharable
 public class PortalInboundHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(PortalInboundHandler.class);
 
-    private static InvokerHolder invokerHolder = InvokerHolderFactory.getInstance().getInvokerHolder("netty");
+    private static InvokerHolder invokerHolder = InvokerHolderFactory.getInstance().getInvokerHolder(Transporter.NETTY);
 
     private final String interfaceClazz;
 
