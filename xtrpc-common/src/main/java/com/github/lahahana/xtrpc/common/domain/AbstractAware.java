@@ -9,44 +9,35 @@ public abstract class AbstractAware<R> implements Aware<R> {
 
     private Thread waiter;
 
+    private boolean awared;
+
     private R msg;
 
     @Override
-    public R aware()  throws TimeoutException {
-        return aware(0L);
+    public R aware() {
+        waiter = Thread.currentThread();
+        LockSupport.park();
+        return msg;
     }
 
     @Override
     public R aware(long timeout) throws TimeoutException {
         waiter = Thread.currentThread();
-        if (timeout <= 0) {
-            LockSupport.park();
-        } else {
-            LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(timeout));
-        }
-//        if(waiter.isInterrupted()) {
-//            throw new InterruptedException();
-//        }
-        if (msg == null) {
+
+        LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(timeout));
+        if (!awared) {
             throw new TimeoutException();
         }
-//        synchronized (this) {
-//            try {
-//                this.wait(timeout);
-//            } catch (InterruptedException e) {
-//                throw new TimeoutException();
-//            }
-//        }
         return msg;
     }
 
     @Override
     public void notify(R msg) {
+        this.awared = true;
         this.msg = msg;
         LockSupport.unpark(waiter);
+
+        //release thread reference
         waiter = null;
-//        synchronized (this) {
-//            notify();
-//        }
     }
 }
