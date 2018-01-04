@@ -27,7 +27,7 @@ public class RequestDecoder extends ByteToMessageDecoder {
             //update channel expiration time, to avoid unlimited channel hold resource?
             byte codecType = in.readByte();
             codecUtil = codecUtil == null ? CodecUtilFactory.getCodecUtil(codecType) : codecUtil;
-            if(in.readableBytes() < codecUtil.getByteNumOfDataLengthMark()) {
+            if (in.readableBytes() < MessageConstraints.DATA_SIZE_HEAD_LENGTH) {
                 in.resetReaderIndex();
                 return;
             }
@@ -50,7 +50,7 @@ public class RequestDecoder extends ByteToMessageDecoder {
         }else if(headMark == MessageConstraints.XTREQUEST_HEAD) {
             byte codecType = in.readByte();
             codecUtil = codecUtil == null ? CodecUtilFactory.getCodecUtil(codecType) : codecUtil;
-            if(in.readableBytes() < codecUtil.getByteNumOfDataLengthMark()) {
+            if (in.readableBytes() < MessageConstraints.DATA_SIZE_HEAD_LENGTH) {
                 in.resetReaderIndex();
                 return;
             }
@@ -73,6 +73,7 @@ public class RequestDecoder extends ByteToMessageDecoder {
         }else {
             //reset read index
             in.resetReaderIndex();
+
         }
     }
 }

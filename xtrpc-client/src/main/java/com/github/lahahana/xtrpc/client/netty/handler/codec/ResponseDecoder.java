@@ -2,6 +2,7 @@ package com.github.lahahana.xtrpc.client.netty.handler.codec;
 
 import com.github.lahahana.xtrpc.common.codec.CodecUtil;
 import com.github.lahahana.xtrpc.common.codec.CodecUtilFactory;
+import com.github.lahahana.xtrpc.common.constant.MessageConstraints;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -25,7 +26,7 @@ public class ResponseDecoder extends ByteToMessageDecoder {
             //get corresponding codec util by msg codec type at first time
             codecUtil = codecUtil == null ? CodecUtilFactory.getCodecUtil(codecType) : codecUtil;
 
-            if (in.readableBytes() < codecUtil.getByteNumOfDataLengthMark()) {
+            if (in.readableBytes() < MessageConstraints.DATA_SIZE_HEAD_LENGTH) {
                 in.resetReaderIndex();
                 return;
             }

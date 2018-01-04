@@ -1,5 +1,6 @@
 package com.github.lahahana.xtrpc.common.codec;
 
+import com.github.lahahana.xtrpc.common.constant.MessageConstraints;
 import io.netty.buffer.ByteBuf;
 
 import java.io.*;
@@ -11,6 +12,7 @@ public class JavaCodecUtil implements CodecUtil {
         try(ByteArrayOutputStream outputStream = new ByteArrayOutputStream(); ObjectOutputStream oos = new ObjectOutputStream(outputStream)) {
             oos.writeObject(msg);
             byte[] bytesOfMsg = outputStream.toByteArray();
+            byteBuf.writeByte(MessageConstraints.CODEC_JAVA);
             byteBuf.writeInt(bytesOfMsg.length);
             byteBuf.writeBytes(bytesOfMsg);
         }
