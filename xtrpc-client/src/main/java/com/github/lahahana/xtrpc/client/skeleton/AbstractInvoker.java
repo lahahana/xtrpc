@@ -45,6 +45,11 @@ public abstract class AbstractInvoker<T> implements Invoker {
     }
 
     @Override
+    public boolean isAvailable() {
+        return available;
+    }
+
+    @Override
     public void incrementInvokeCount() {
         invokeCounter.increment();
     }

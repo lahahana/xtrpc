@@ -1,5 +1,7 @@
 package com.github.lahahana.xtrpc.server.stub;
 
+import com.github.lahahana.xtrpc.common.codec.CodecUtil;
+import com.github.lahahana.xtrpc.common.codec.CodecUtilFactory;
 import com.github.lahahana.xtrpc.common.config.api.ServiceConfig;
 import com.github.lahahana.xtrpc.common.domain.Service;
 import com.github.lahahana.xtrpc.common.exception.ServiceRegisterException;
@@ -42,7 +44,7 @@ public class NettyServiceStub extends AbstractServiceStub {
     public void bootstrap() throws StubInitializeException {
         bossEventGroup = new NioEventLoopGroup(1, new CustomThreadFactory("xtBossNettyIOThread", false));
         workerEventGroup = new NioEventLoopGroup(Runtime.getRuntime().availableProcessors() * 2 + 1, new CustomThreadFactory("xtWorkerNettyIOThread", false));
-
+        final CodecUtil codecUtil = CodecUtilFactory.getCodecUtil(serviceConfig.getProtocol().getSerialization());
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.group(bossEventGroup, workerEventGroup)
                 .channel(NioServerSocketChannel.class)
@@ -58,8 +60,8 @@ public class NettyServiceStub extends AbstractServiceStub {
                         ch.pipeline().addLast(new RequestDecoder())
                                 .addLast(new XTRequestInboundHandler(getServiceRef()))
                                 .addLast(new FunctionRequestInboundHandler())
-                                .addLast(new FunctionResponseEncoder())
-                                .addLast(new XTResponseEncoder())
+                                .addLast(new FunctionResponseEncoder(codecUtil))
+                                .addLast(new XTResponseEncoder(codecUtil))
                                 .addLast(new XTServerOutboundPortalHandler());
                     }
                 });

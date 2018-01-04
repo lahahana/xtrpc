@@ -1,6 +1,5 @@
 package com.github.lahahana.xtrpc.server.handler.codec;
 
-import com.github.lahahana.xtrpc.common.codec.CodecUtilFactory;
 import com.github.lahahana.xtrpc.common.codec.CodecUtil;
 import com.github.lahahana.xtrpc.common.constant.MessageConstraints;
 import com.github.lahahana.xtrpc.common.domain.XTResponse;
@@ -16,7 +15,11 @@ public class XTResponseEncoder extends MessageToByteEncoder<XTResponse> {
 
     private static final Logger logger = LoggerFactory.getLogger(XTResponseEncoder.class);
 
-    private static CodecUtil codecUtil = CodecUtilFactory.getCodecUtil();
+    private final CodecUtil codecUtil;
+
+    public XTResponseEncoder(CodecUtil codecUtil) {
+        this.codecUtil = codecUtil;
+    }
 
     @Override
     protected void encode(ChannelHandlerContext ctx, XTResponse msg, ByteBuf out) throws Exception {

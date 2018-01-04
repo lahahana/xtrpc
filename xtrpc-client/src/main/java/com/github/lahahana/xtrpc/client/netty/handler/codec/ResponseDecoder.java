@@ -19,15 +19,16 @@ public class ResponseDecoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
         if (in.isReadable()) {
+            in.markReaderIndex();
+            byte msgType = in.readByte();
             byte codecType = in.readByte();
             //get corresponding codec util by msg codec type at first time
             codecUtil = codecUtil == null ? CodecUtilFactory.getCodecUtil(codecType) : codecUtil;
 
-            byte msgType = in.readByte();
             if (in.readableBytes() < codecUtil.getByteNumOfDataLengthMark()) {
+                in.resetReaderIndex();
                 return;
             }
-            in.markReaderIndex();
             int dataLength = in.readInt();
             if (in.readableBytes() < dataLength) {
                 in.resetReaderIndex();

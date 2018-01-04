@@ -13,7 +13,7 @@ public class XTServerOutboundPortalHandler extends ChannelOutboundHandlerAdapter
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         String clientHost = ctx.channel().remoteAddress().toString();
-        logger.debug("send response to: host={}, response={}", clientHost, msg);
+//        logger.debug("send response to: host={}, response={}", clientHost, msg);
         super.write(ctx, msg, promise);
     }
 

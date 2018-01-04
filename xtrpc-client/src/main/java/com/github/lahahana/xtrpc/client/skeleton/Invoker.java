@@ -16,6 +16,8 @@ public interface Invoker extends Destroyable {
 
     public void markAsUnavailable();
 
+    public boolean isAvailable();
+
     public void incrementInvokeCount();
 
     public long getInvokeCount();

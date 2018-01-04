@@ -1,6 +1,5 @@
 package com.github.lahahana.xtrpc.client.discovery;
 
-import com.github.lahahana.xtrpc.client.skeleton.ClientStub;
 import com.github.lahahana.xtrpc.common.base.SingletonDestroyableFactory;
 import com.github.lahahana.xtrpc.common.config.api.Registry;
 import org.slf4j.Logger;
@@ -8,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 public final class ServiceDiscovererFactory extends SingletonDestroyableFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(ClientStub.class);
+    private static final Logger logger = LoggerFactory.getLogger(ServiceDiscovererFactory.class);
 
     private static volatile ServiceDiscovererFactory instance;
 

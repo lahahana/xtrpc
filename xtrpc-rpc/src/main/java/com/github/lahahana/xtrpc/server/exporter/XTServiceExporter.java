@@ -15,6 +15,7 @@ public class XTServiceExporter {
     private ServiceConfig serviceConfig;
 
     private XTServiceExporter(Builder builder) {
+        serviceConfig = new ServiceConfig();
         serviceConfig.setApplication(builder.application);
         serviceConfig.setProtocol(builder.protocol);
         serviceConfig.setInterfaceClass(builder.interfaceClass);
@@ -68,8 +69,10 @@ public class XTServiceExporter {
          * @param interfaceClass the interface of service which you want to established as remote ref service
          */
         public Builder setService(Class<?> interfaceClass, Object serviceRef) {
-            if (!serviceRef.getClass().isAssignableFrom(interfaceClass))
+            if (!interfaceClass.isAssignableFrom(serviceRef.getClass()))
                 throw new IllegalArgumentException("service ref must implement interfaceClass");
+            this.interfaceClass = interfaceClass;
+            this.serviceRef = serviceRef;
             return this;
         }
 

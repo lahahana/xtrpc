@@ -19,7 +19,11 @@ public abstract class AbstractAware<R> implements Aware<R> {
     @Override
     public R aware(long timeout) throws TimeoutException {
         waiter = Thread.currentThread();
-        LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(timeout));
+        if (timeout <= 0) {
+            LockSupport.park();
+        } else {
+            LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(timeout));
+        }
 //        if(waiter.isInterrupted()) {
 //            throw new InterruptedException();
 //        }

@@ -44,7 +44,7 @@ public class XTRequestInboundHandler extends SimpleChannelInboundHandler<XTReque
     protected void channelRead0(ChannelHandlerContext ctx, XTRequest msg) throws Exception {
         try {
             String clientHost = ctx.channel().remoteAddress().toString();
-            logger.debug("receive request: srcHost={}, XTRequest={}", clientHost, msg);
+            logger.debug("srcHost={}, XTRequest={}", clientHost, msg);
             //dispatch request to local function async
             dispatcher.dispatch(ctx.channel(), msg);
         } catch (Exception e) {
@@ -57,7 +57,7 @@ public class XTRequestInboundHandler extends SimpleChannelInboundHandler<XTReque
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.error("exception caught:", cause);
+        logger.warn("exception caught:", cause);
     }
 
     private void removeChannelHandlerCtx(ChannelHandlerContext ctx) {

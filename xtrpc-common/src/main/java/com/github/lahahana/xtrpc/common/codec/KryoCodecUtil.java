@@ -25,11 +25,11 @@ public class KryoCodecUtil implements CodecUtil {
         out.close();
         pool.release(kryo);
 
-        byte[] bytesOfMsg = outputStream.toByteArray();
-        //write data length ahead
-        byteBuf.writeInt(bytesOfMsg.length);
         //write codec type ahead
         byteBuf.writeByte(MessageConstraints.CODEC_KRYO);
+        //write data length ahead
+        byte[] bytesOfMsg = outputStream.toByteArray();
+        byteBuf.writeInt(bytesOfMsg.length);
         byteBuf.writeBytes(bytesOfMsg);
 
     }

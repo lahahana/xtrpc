@@ -23,8 +23,7 @@ import java.util.concurrent.Executors;
 public class ExceptionalFunctionTest {
 
     private static Logger logger = LoggerFactory.getLogger(ExceptionalFunctionTest.class);
-    private static String address = NetworkUtil.getLocalHostInetAddress().getHostAddress() + ":" + 8088;
-    private static String address2 = NetworkUtil.getLocalHostInetAddress().getHostAddress() + ":" + 8089;
+    private static String address = NetworkUtil.getLocalHostInetAddress().getHostAddress() + ":" + 8090;
     private static ExceptionService exceptionService;
     private static ExecutorService testExecutors = Executors.newFixedThreadPool(5);
 

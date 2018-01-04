@@ -9,7 +9,6 @@ import com.github.lahahana.xtrpc.common.threadfactory.CustomThreadFactory;
 import com.github.lahahana.xtrpc.common.util.CommonUtil;
 import com.github.lahahana.xtrpc.server.ChannelHandlerCtxHolder;
 import com.github.lahahana.xtrpc.server.dispatch.spi.RequestDispatcher;
-import com.github.lahahana.xtrpc.server.stub.ServiceHolder;
 import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +50,7 @@ public class XTRequestDispatcher implements RequestDispatcher {
 
             } catch (IllegalAccessException | NoSuchMethodException e) {
                 logger.error("service={}.{} not found", interfaceName, method);
-                Throwable th = new ServiceNotFoundException();
+                Throwable th = new ServiceNotFoundException(e);
                 xtResponse.setStatusCode(Constraints.STATUS_ERROR);
                 xtResponse.setThrowableClass(ServiceNotFoundException.class.getName());
                 xtResponse.setThrowable(CommonUtil.getStackTraceFromThrowable(th));

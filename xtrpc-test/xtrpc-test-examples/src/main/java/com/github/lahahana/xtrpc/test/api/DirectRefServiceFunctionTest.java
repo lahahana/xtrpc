@@ -5,7 +5,6 @@ import com.github.lahahana.xtrpc.client.importer.XTServiceImporter;
 import com.github.lahahana.xtrpc.common.config.api.Application;
 import com.github.lahahana.xtrpc.common.util.NetworkUtil;
 import com.github.lahahana.xtrpc.test.mock.service.AddressService;
-import com.github.lahahana.xtrpc.test.mock.service.ExceptionService;
 import com.github.lahahana.xtrpc.test.mock.task.AddressTask;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -33,7 +32,7 @@ public class DirectRefServiceFunctionTest {
     public static void beforeSetup() {
         XTServiceImporter xtServiceImporter = new XTServiceImporter.Builder()
                 .setApplication(new Application("DirectRefStyleClient-1"))
-                .addDirectRefService(new DirectRefService(ExceptionService.class, address))
+                .addDirectRefService(new DirectRefService(AddressService.class, address))
                 .build();
         xtServiceImporter.doImport();
         addressService = xtServiceImporter.getRefService(AddressService.class);

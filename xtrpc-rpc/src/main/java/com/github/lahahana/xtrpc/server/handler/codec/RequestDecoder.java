@@ -15,47 +15,61 @@ public class RequestDecoder extends ByteToMessageDecoder {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestDecoder.class);
 
-    private static CodecUtil codecUtil = CodecUtilFactory.getCodecUtil();
+    private static CodecUtil codecUtil;
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
         in.markReaderIndex();
         byte headMark = in.readByte();
+        logger.debug("receive request srcHost={}", ctx.channel().remoteAddress());
         if(headMark == MessageConstraints.FUNCTION_REQUEST_HEAD) {
             //expand the expiration time of channel
             //update channel expiration time, to avoid unlimited channel hold resource?
-            logger.debug("receive FunctionRequest from: {}", ctx.channel().remoteAddress());
+            byte codecType = in.readByte();
+            codecUtil = codecUtil == null ? CodecUtilFactory.getCodecUtil(codecType) : codecUtil;
             if(in.readableBytes() < codecUtil.getByteNumOfDataLengthMark()) {
                 in.resetReaderIndex();
                 return;
             }
-            in.markReaderIndex();
-            int dataLength = in.readInt();
-            if(in.readableBytes() < dataLength) {
+
+            if (in.isReadable(4)) {
+                int dataLength = in.readInt();
+                if (in.readableBytes() < dataLength) {
+                    in.resetReaderIndex();
+                    return;
+                }
+                byte[] data = new byte[dataLength];
+                in.readBytes(data);
+                Object result = codecUtil.decode(data);
+                out.add(result);
+            } else {
                 in.resetReaderIndex();
                 return;
             }
-            byte[] data = new byte[dataLength];
-            in.readBytes(data);
-            Object result = codecUtil.decode(data);
-            out.add(result);
+
         }else if(headMark == MessageConstraints.XTREQUEST_HEAD) {
-            logger.debug("receive XTRequest from: {}", ctx.channel().remoteAddress());
+            byte codecType = in.readByte();
+            codecUtil = codecUtil == null ? CodecUtilFactory.getCodecUtil(codecType) : codecUtil;
             if(in.readableBytes() < codecUtil.getByteNumOfDataLengthMark()) {
                 in.resetReaderIndex();
                 return;
             }
-            in.markReaderIndex();
-            int dataLength = in.readInt();
-            //wait for full-message
-            if(in.readableBytes() < dataLength) {
+            if (in.isReadable(4)) {
+                int dataLength = in.readInt();
+                //wait for full-message
+                if (in.readableBytes() < dataLength) {
+                    in.resetReaderIndex();
+                    return;
+                }
+                byte[] data = new byte[dataLength];
+                in.readBytes(data);
+                Object result = codecUtil.decode(data);
+                out.add(result);
+            } else {
                 in.resetReaderIndex();
                 return;
             }
-            byte[] data = new byte[dataLength];
-            in.readBytes(data);
-            Object result = codecUtil.decode(data);
-            out.add(result);
+
         }else {
             //reset read index
             in.resetReaderIndex();

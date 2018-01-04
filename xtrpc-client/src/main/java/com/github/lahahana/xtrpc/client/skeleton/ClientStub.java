@@ -188,6 +188,9 @@ public abstract class ClientStub implements XTStub {
     private Object failOverRetry(InvokerHolder invokerHolder, List<Invoker> invokers, XTRequest xtRequest, Method method) throws NoAvailableServicesException, Exception {
         for (int i = 0; i < invokers.size(); i++) {
             Invoker invoker0 = invokers.get(i);
+            if (!invoker0.isAvailable()) {
+                return null;
+            }
             logger.info("Fail over retry, times={}, invoker={}", i + 1, invoker0);
             try {
                 XTResponseAware responseAware = responseDispatcher.register(xtRequest);

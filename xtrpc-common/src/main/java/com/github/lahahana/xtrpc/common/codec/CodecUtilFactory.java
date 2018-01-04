@@ -5,6 +5,8 @@ public class CodecUtilFactory {
     private static KryoCodecUtil kryoCodecUtil = new KryoCodecUtil();
 
     public static CodecUtil getCodecUtil(String codec) {
+        if (codec == null)
+            return kryoCodecUtil;
         switch (codec) {
             case "kryo":
                 return kryoCodecUtil;
