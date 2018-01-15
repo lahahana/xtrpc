@@ -5,7 +5,6 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.pool.KryoPool;
 import com.github.lahahana.xtrpc.common.constant.MessageConstraints;
-import com.github.lahahana.xtrpc.common.serialization.KryoPoolFactory;
 import io.netty.buffer.ByteBuf;
 
 import java.io.ByteArrayInputStream;

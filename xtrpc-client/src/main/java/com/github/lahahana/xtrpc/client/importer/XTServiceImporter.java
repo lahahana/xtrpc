@@ -1,8 +1,8 @@
 package com.github.lahahana.xtrpc.client.importer;
 
-import com.github.lahahana.xtrpc.client.proxy.XTRpcClientProxy;
-import com.github.lahahana.xtrpc.client.skeleton.ClientStub;
-import com.github.lahahana.xtrpc.client.skeleton.ClientStubFactory;
+import com.github.lahahana.xtrpc.client.skeleton.proxy.XTRpcClientProxy;
+import com.github.lahahana.xtrpc.client.skeleton.stub.ClientStub;
+import com.github.lahahana.xtrpc.client.skeleton.stub.ClientStubFactory;
 import com.github.lahahana.xtrpc.common.config.api.Application;
 import com.github.lahahana.xtrpc.common.config.api.Protocol;
 import com.github.lahahana.xtrpc.common.domain.Service;

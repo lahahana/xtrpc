@@ -1,9 +1,9 @@
 package com.github.lahahana.xtrpc.client.netty.handler;
 
 import com.github.lahahana.xtrpc.client.netty.NettyInvoker;
-import com.github.lahahana.xtrpc.client.skeleton.Invoker;
-import com.github.lahahana.xtrpc.client.skeleton.InvokerHolder;
-import com.github.lahahana.xtrpc.client.skeleton.InvokerHolderFactory;
+import com.github.lahahana.xtrpc.client.skeleton.invoker.Invoker;
+import com.github.lahahana.xtrpc.client.skeleton.invoker.InvokerHolder;
+import com.github.lahahana.xtrpc.client.skeleton.invoker.InvokerHolderFactory;
 import com.github.lahahana.xtrpc.common.domain.Aware;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;

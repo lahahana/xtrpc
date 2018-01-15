@@ -1,7 +1,7 @@
 package com.github.lahahana.xtrpc.client.netty;
 
-import com.github.lahahana.xtrpc.client.skeleton.Invoker;
-import com.github.lahahana.xtrpc.client.skeleton.ScheduledHeartBeatInvoker;
+import com.github.lahahana.xtrpc.client.skeleton.invoker.Invoker;
+import com.github.lahahana.xtrpc.client.skeleton.invoker.ScheduledHeartBeatInvoker;
 import com.github.lahahana.xtrpc.common.constant.MessageConstraints;
 import com.github.lahahana.xtrpc.common.domain.FunctionRequest;
 import io.netty.channel.Channel;

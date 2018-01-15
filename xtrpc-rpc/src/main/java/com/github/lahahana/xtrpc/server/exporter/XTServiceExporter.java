@@ -8,7 +8,7 @@ import com.github.lahahana.xtrpc.common.config.api.ServiceConfig;
 import com.github.lahahana.xtrpc.common.exception.ServiceExportException;
 import com.github.lahahana.xtrpc.common.exception.StubInitializeException;
 import com.github.lahahana.xtrpc.common.util.AssertsUtil;
-import com.github.lahahana.xtrpc.server.stub.NettyServiceStub;
+import com.github.lahahana.xtrpc.server.netty.NettyServiceStub;
 
 public class XTServiceExporter {
 

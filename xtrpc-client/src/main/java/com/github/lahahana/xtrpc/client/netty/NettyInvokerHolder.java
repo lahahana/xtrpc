@@ -1,6 +1,6 @@
 package com.github.lahahana.xtrpc.client.netty;
 
-import com.github.lahahana.xtrpc.client.skeleton.AbstractInvokerHolder;
+import com.github.lahahana.xtrpc.client.skeleton.invoker.AbstractInvokerHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

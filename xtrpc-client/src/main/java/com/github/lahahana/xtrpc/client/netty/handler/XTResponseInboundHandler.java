@@ -1,6 +1,6 @@
 package com.github.lahahana.xtrpc.client.netty.handler;
 
-import com.github.lahahana.xtrpc.client.dispatch.XTResponseDispatcher;
+import com.github.lahahana.xtrpc.client.skeleton.dispatch.XTResponseDispatcher;
 import com.github.lahahana.xtrpc.common.domain.Aware;
 import com.github.lahahana.xtrpc.common.domain.XTResponse;
 import io.netty.channel.ChannelHandlerContext;

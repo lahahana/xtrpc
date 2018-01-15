@@ -16,7 +16,6 @@ public class JavaCodecUtil implements CodecUtil {
             byteBuf.writeInt(bytesOfMsg.length);
             byteBuf.writeBytes(bytesOfMsg);
         }
-
     }
 
     @Override

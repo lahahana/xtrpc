@@ -1,6 +1,6 @@
 package com.github.lahahana.xtrpc.client.netty;
 
-import com.github.lahahana.xtrpc.client.skeleton.AbstractInvoker;
+import com.github.lahahana.xtrpc.client.skeleton.invoker.AbstractInvoker;
 import com.github.lahahana.xtrpc.common.domain.XTRequest;
 import com.github.lahahana.xtrpc.common.exception.XTRequestInvokeException;
 import com.github.lahahana.xtrpc.common.util.NetworkUtil;

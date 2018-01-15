@@ -7,9 +7,9 @@ import static com.github.lahahana.xtrpc.common.constant.MessageConstraints.CODEC
 
 public class CodecUtilFactory {
 
-    private static KryoCodecUtil kryoCodecUtil = new KryoCodecUtil();
+    private static final KryoCodecUtil kryoCodecUtil = new KryoCodecUtil();
 
-    private static JavaCodecUtil javaCodecUtil = new JavaCodecUtil();
+    private static final JavaCodecUtil javaCodecUtil = new JavaCodecUtil();
 
     public static CodecUtil getCodecUtil(String codecType) {
         if (codecType == null)
