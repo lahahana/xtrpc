@@ -24,6 +24,7 @@
         <spring_version>4.3.12.RELEASE</spring_version>
         <junit_version>4.12</junit_version>
         <redis_version>2.9.0</redis_version>
+        <undertow_version>1.4.21.Final</undertow_version>
     </properties>
 
     <developers>
@@ -79,6 +80,12 @@
                 <artifactId>jedis</artifactId>
                 <version>${redis_version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.undertow</groupId>
+                <artifactId>undertow-servlet</artifactId>
+                <version>${undertow_version}</version>
+            </dependency>
+
 
         </dependencies>
     </dependencyManagement>
