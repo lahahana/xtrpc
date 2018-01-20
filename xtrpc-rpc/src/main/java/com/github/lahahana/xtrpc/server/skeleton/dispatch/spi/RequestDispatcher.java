@@ -8,6 +8,6 @@ public interface RequestDispatcher<T> {
 
     /**
      * Dispatch request to target service existed in spring context, etc.
-     * */
+     */
     public Future dispatch(T invoker, XTRequest xtRequest);
 }

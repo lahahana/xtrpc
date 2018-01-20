@@ -25,14 +25,14 @@ public abstract class ScheduledHeartBeatInvoker extends TimerTask implements Des
     private Timer timer;
 
     public void start() {
-        timer = new Timer("scheduledHeartBeatInvoker",true);
+        timer = new Timer("scheduledHeartBeatInvoker", true);
         timer.scheduleAtFixedRate(getSelf(), HEART_BEAT_INTERVAL, HEART_BEAT_INTERVAL);
-        logger.debug("scheduledHeartBeatInvoker started, delay(ms)={},heart beat interval(ms)={}",HEART_BEAT_INTERVAL, HEART_BEAT_INTERVAL);
+        logger.debug("scheduledHeartBeatInvoker started, delay(ms)={},heart beat interval(ms)={}", HEART_BEAT_INTERVAL, HEART_BEAT_INTERVAL);
     }
 
     public void stop() {
         //avoid NPE when client execute requests in a short time(less than HEART_BEAT_INTERVAL) and then exit vm.
-        if(timer != null)
+        if (timer != null)
             timer.cancel();
     }
 
@@ -54,9 +54,9 @@ public abstract class ScheduledHeartBeatInvoker extends TimerTask implements Des
         List<HeartBeatTask> tasks = createHeartBeatTasks(invokers);
         logger.debug("heart beat tasks scheduled, size:{}", tasks.size());
         tasks.stream().forEach((task) -> {
-                executorService.submit(task);
-            });
-        }
+            executorService.submit(task);
+        });
+    }
 
     protected abstract class HeartBeatTask<T extends Invoker> implements Runnable {
 

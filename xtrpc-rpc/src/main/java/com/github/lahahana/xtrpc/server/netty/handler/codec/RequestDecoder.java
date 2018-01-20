@@ -22,7 +22,7 @@ public class RequestDecoder extends ByteToMessageDecoder {
         in.markReaderIndex();
         byte headMark = in.readByte();
         logger.debug("receive request srcHost={}", ctx.channel().remoteAddress());
-        if(headMark == MessageConstraints.FUNCTION_REQUEST_HEAD) {
+        if (headMark == MessageConstraints.FUNCTION_REQUEST_HEAD) {
             //expand the expiration time of channel
             //update channel expiration time, to avoid unlimited channel hold resource?
             byte codecType = in.readByte();
@@ -47,7 +47,7 @@ public class RequestDecoder extends ByteToMessageDecoder {
                 return;
             }
 
-        }else if(headMark == MessageConstraints.XTREQUEST_HEAD) {
+        } else if (headMark == MessageConstraints.XTREQUEST_HEAD) {
             byte codecType = in.readByte();
             codecUtil = codecUtil == null ? CodecUtilFactory.getCodecUtil(codecType) : codecUtil;
             if (in.readableBytes() < MessageConstraints.DATA_SIZE_HEAD_LENGTH) {
@@ -70,7 +70,7 @@ public class RequestDecoder extends ByteToMessageDecoder {
                 return;
             }
 
-        }else {
+        } else {
             //reset read index
             in.resetReaderIndex();
 

@@ -21,7 +21,7 @@ public class XTRequestEncoder extends MessageToByteEncoder<XTRequest> {
 
     @Override
     protected void encode(ChannelHandlerContext ctx, XTRequest msg, ByteBuf out) throws Exception {
-        if(out.isWritable()) {
+        if (out.isWritable()) {
             out.writeByte(MessageConstraints.XTREQUEST_HEAD);
         }
         codecUtil.encode(out, msg);

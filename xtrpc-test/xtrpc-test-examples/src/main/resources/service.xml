@@ -4,9 +4,9 @@
        xmlns:xt="https://github.com/lahahana/schema/xtrpc"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
             https://github.com/lahahana/schema/xtrpc https://github.com/lahahana/schema/xtrpc/xt.xsd">
-    <xt:registry address="http://localhost:8080" />
-    <xt:application name="mockService1" />
-    <xt:protocol name="xt" />
+    <xt:registry address="http://localhost:8080"/>
+    <xt:application name="mockService1"/>
+    <xt:protocol name="xt"/>
     <xt:service interface="com.github.lahahana.xtrpc.test.mock.service.AddressService" ref="addressService"/>
     <bean id="addressService" class="com.github.lahahana.xtrpc.test.mock.service.impl.AddressServiceImpl"></bean>
 </beans>

@@ -10,7 +10,8 @@ public class NettyInvokerHolder extends AbstractInvokerHolder {
 
     private static volatile NettyInvokerHolder instance;
 
-    private NettyInvokerHolder(){}
+    private NettyInvokerHolder() {
+    }
 
     public static NettyInvokerHolder getInstance() {
         if (instance == null) {

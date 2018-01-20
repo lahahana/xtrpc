@@ -26,7 +26,8 @@ public class ClientStubFactory extends SingletonDestroyableFactory {
     }
 
     public synchronized ClientStub getClientStub(Protocol protocol) {
-        Transporter transporter = Transporter.valueOf(protocol.getTransporter());
+        String transporterParam = protocol.getTransporter();
+        Transporter transporter = Transporter.valueOf(transporterParam == null ? Transporter.NETTY.value() : transporterParam);
         ClientStub stub = null;
         switch (transporter) {
             case NETTY:

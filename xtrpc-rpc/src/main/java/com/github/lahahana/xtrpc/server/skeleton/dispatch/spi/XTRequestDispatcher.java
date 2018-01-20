@@ -49,13 +49,13 @@ public abstract class XTRequestDispatcher<T> implements RequestDispatcher<T> {
                 xtResponse.setStatusCode(Constraints.STATUS_ERROR);
                 xtResponse.setThrowableClass(ServiceNotFoundException.class.getName());
                 xtResponse.setThrowable(CommonUtil.getStackTraceFromThrowable(th));
-            } catch (InvocationTargetException e){
+            } catch (InvocationTargetException e) {
                 Throwable targetException = e.getTargetException();
                 logger.error(targetException.getClass().getName());
                 xtResponse.setStatusCode(Constraints.STATUS_METHOD_ERROR);
                 xtResponse.setThrowableClass(targetException.getClass().getName());
                 xtResponse.setThrowable(CommonUtil.getStackTraceFromThrowable(targetException));
-            }catch (Exception e) {
+            } catch (Exception e) {
                 logger.error(e.getMessage(), e);
                 xtResponse.setStatusCode(Constraints.STATUS_METHOD_ERROR);
                 xtResponse.setThrowableClass(e.getClass().getName());

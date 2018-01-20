@@ -104,7 +104,7 @@ public abstract class ClientStub implements XTStub {
             lockStateTuple0.setV(true);
         } catch (Exception e) {
             service.setAvailable(false);
-            serviceHolder.markServiceAsUnavailable(service.getServiceInterface(), NetworkUtil.assembleAddress(service.getHost(),service.getPort()));
+            serviceHolder.markServiceAsUnavailable(service.getServiceInterface(), NetworkUtil.assembleAddress(service.getHost(), service.getPort()));
             throw new ServiceNotAvailableException(e);
         } finally {
             lock.unlock();
@@ -127,7 +127,7 @@ public abstract class ClientStub implements XTStub {
                 logger.warn("service not available, refService={}", service);
                 //hint: partial registry ref service unavailable tolerance
                 int unavailableServiceCount = unavailableServiceCounter.incrementAndGet();
-                if(unavailableServiceCount == services.size()) {
+                if (unavailableServiceCount == services.size()) {
                     throw new NoAvailableServicesException();
                 }
             }
@@ -175,7 +175,7 @@ public abstract class ClientStub implements XTStub {
     private void handleMethodException(Method method, String throwableClass, String throwableInfo) throws Exception {
         Class<?>[] exceptionTypes = method.getExceptionTypes();
         String clazzName = throwableClass;
-        if(exceptionTypes == null || exceptionTypes.length == 0) {
+        if (exceptionTypes == null || exceptionTypes.length == 0) {
             //it is a runtime exception and not defined on method
             throw new RuntimeException(throwableInfo);
         }
@@ -183,7 +183,7 @@ public abstract class ClientStub implements XTStub {
         Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(clazzName);
         Optional<? extends Class<?>> opt = CommonUtil.findMatchedExceptionType(exceptionTypes, clazz);
         Class<?> exceptionType = opt.orElseThrow(() -> new RuntimeException(throwableInfo));
-        throw (Exception)exceptionType.getConstructor(String.class).newInstance(throwableInfo);
+        throw (Exception) exceptionType.getConstructor(String.class).newInstance(throwableInfo);
     }
 
     private Object failOverRetry(InvokerHolder invokerHolder, List<Invoker> invokers, XTRequest xtRequest, Method method) throws NoAvailableServicesException, Exception {
@@ -223,7 +223,7 @@ public abstract class ClientStub implements XTStub {
 
     /**
      * Sub class need to implement this method to fulfill remote service initiation logic
-     * */
+     */
     protected abstract void initRefService0(Service service) throws ServiceNotAvailableException;
 
     protected abstract InvokerHolder getInvokerHolder();

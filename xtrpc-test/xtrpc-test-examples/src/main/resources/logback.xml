@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false">
-    <property name="APP_NAME" value="logtest" />
-    <property name="LOG_HOME" value="${log.dir:-logs}/${APP_NAME}" />
+    <property name="APP_NAME" value="logtest"/>
+    <property name="LOG_HOME" value="${log.dir:-logs}/${APP_NAME}"/>
     <property name="ENCODER_PATTERN"
-              value="%d{yyyy-MM-dd  HH:mm:ss.SSS} [%thread] %-5level %logger{80}:%L - %msg%n" />
+              value="%d{yyyy-MM-dd  HH:mm:ss.SSS} [%thread] %-5level %logger{80}:%L - %msg%n"/>
     <contextName>${APP_NAME}</contextName>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -37,7 +37,7 @@
         </filter>
     </appender>
 
-    <appender name="SYNC_FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="SYNC_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_HOME}/sync.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>7</maxHistory>
@@ -51,8 +51,8 @@
     <logger name="io.netty" level="INFO"/>
 
     <root>
-        <level value="debug" />
-        <appender-ref ref="STDOUT" />
+        <level value="debug"/>
+        <appender-ref ref="STDOUT"/>
         <!--<appender-ref ref="FILE" />-->
         <!--<appender-ref ref="ERROR_FILE" />-->
     </root>

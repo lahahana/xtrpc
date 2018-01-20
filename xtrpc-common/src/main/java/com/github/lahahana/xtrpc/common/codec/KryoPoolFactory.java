@@ -31,9 +31,9 @@ public class KryoPoolFactory {
     }
 
     public static KryoPoolFactory getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             synchronized (KryoPoolFactory.class) {
-                if(instance == null) {
+                if (instance == null) {
                     instance = new KryoPoolFactory();
                 }
             }

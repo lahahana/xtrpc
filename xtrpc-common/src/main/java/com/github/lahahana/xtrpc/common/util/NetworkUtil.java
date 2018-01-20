@@ -3,7 +3,6 @@ package com.github.lahahana.xtrpc.common.util;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.Enumeration;
 
 public class NetworkUtil {

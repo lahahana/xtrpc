@@ -7,7 +7,7 @@ public interface ExceptionService {
 
     void throwUnknownException();
 
-    void throwKnownException() throws FileNotFoundException, IOException ;
+    void throwKnownException() throws FileNotFoundException, IOException;
 
     void throwClientSideNotExistsException();
 

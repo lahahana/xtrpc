@@ -28,8 +28,8 @@ public final class RedisServiceDiscoverer implements ServiceDiscoverer {
         jedis = new Jedis(registry.getHost(), registry.getPort());
     }
 
-    public void destroy(){
-        if(jedis.isConnected()) {
+    public void destroy() {
+        if (jedis.isConnected()) {
             jedis.close();
         }
     }
@@ -48,10 +48,10 @@ public final class RedisServiceDiscoverer implements ServiceDiscoverer {
                     boolean available = Boolean.parseBoolean(items[4]);
                     services.add(new Service(interfaceName0, protocol0, host, port, available));
                 });
-        if(services.size() == 0) {
+        if (services.size() == 0) {
             throw new ServiceNotFoundException();
         }
-        logger.info("discover service of reference={}, size={}",reference,services.size());
+        logger.info("discover service of reference={}, size={}", reference, services.size());
         return services;
     }
 

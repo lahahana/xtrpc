@@ -1,6 +1,5 @@
 package com.github.lahahana.xtrpc.common.config.api;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
 

@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 
 public class Service implements Serializable {
 
@@ -21,7 +19,8 @@ public class Service implements Serializable {
     @Getter
     private int port;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private boolean available;
 
     public Service(String serviceInterface, String protocol, String host, int port) {

@@ -33,7 +33,7 @@ public class XTClientOutboundPortalHandler extends ChannelOutboundHandlerAdapter
 
     @Override
     public void disconnect(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
-        logger.debug("Disconnected: remote address = {}",ctx.channel().remoteAddress());
+        logger.debug("Disconnected: remote address = {}", ctx.channel().remoteAddress());
         super.disconnect(ctx, promise);
     }
 }

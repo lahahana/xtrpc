@@ -5,9 +5,14 @@ import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * This module is created for support internal annotation process
+ */
+@Deprecated
 public class AnnotationProcessor {
 
     private Map<String, Object> httpServiceContainer = new ConcurrentHashMap<String, Object>();
@@ -24,7 +29,7 @@ public class AnnotationProcessor {
                     String interfaceClass = requestPath.split("/" + method)[0];
                     Object serviceRef = httpServiceContainer.get(interfaceClass);
                     if (serviceRef != null) {
-//                        serviceRef.getClass().getDeclaredMethod();
+                        Method targetMethod = serviceRef.getClass().getDeclaredMethod(method);
                     } else {
                         //404
                     }
@@ -47,12 +52,6 @@ public class AnnotationProcessor {
                 stringBuilder.append(exchange.getRequestURL() + "\n");
 
                 exchange.getResponseSender().send(stringBuilder.toString());
-//                exchange.getResponseSender().send(exchange.getRelativePath() + "\n");
-//                exchange.getResponseSender().send(exchange.getRequestPath() + "\n");
-//                exchange.getResponseSender().send(exchange.getRequestScheme() + "\n");
-//                exchange.getResponseSender().send(exchange.getRequestScheme() + "\n");
-//                exchange.getResponseSender().send(exchange.getRequestURI() + "\n");
-//                exchange.getResponseSender().send(exchange.getRequestURL() + "\n");
             }
         };
         Undertow undertow = Undertow.builder().addHttpListener(8081, NetworkUtil.getLocalHostInetAddress().getHostName(), httpHandler).build();

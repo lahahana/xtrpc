@@ -2,7 +2,7 @@ package com.github.lahahana.xtrpc.common.exception;
 
 /**
  * Used when call remote method timeout
- * */
+ */
 public class InvokeTimeoutException extends RuntimeException {
 
     public InvokeTimeoutException() {

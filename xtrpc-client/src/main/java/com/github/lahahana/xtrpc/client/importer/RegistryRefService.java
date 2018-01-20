@@ -22,14 +22,14 @@ public class RegistryRefService implements RefService {
 
     /**
      * @return host of registry
-     * */
+     */
     public String getHost() {
         return registry.getHost();
     }
 
     /**
      * @return port of registry
-     * */
+     */
     public int getPort() {
         return registry.getPort();
     }

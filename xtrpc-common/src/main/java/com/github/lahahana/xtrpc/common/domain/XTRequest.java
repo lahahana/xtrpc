@@ -10,7 +10,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class XTRequest implements Serializable {
 
-    @Getter private long requestId;
+    @Getter
+    private long requestId;
 
     private long timeout;
 

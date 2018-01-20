@@ -16,9 +16,11 @@ public abstract class AbstractServiceStub implements ServiceStub {
         this.serviceRef = serviceConfig.getRef();
     }
 
-    public Object getServiceRef(){
+    public Object getServiceRef() {
         return serviceRef;
-    };
+    }
+
+    ;
 
 
     @Override

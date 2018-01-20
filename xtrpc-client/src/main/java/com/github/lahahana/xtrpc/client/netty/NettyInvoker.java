@@ -22,7 +22,7 @@ public final class NettyInvoker extends AbstractInvoker<ChannelHandlerContext> {
 
     @Override
     public String getAddress() {
-        return NetworkUtil.assembleAddress((InetSocketAddress)pipe.channel().remoteAddress());
+        return NetworkUtil.assembleAddress((InetSocketAddress) pipe.channel().remoteAddress());
     }
 
     @Override
@@ -32,11 +32,11 @@ public final class NettyInvoker extends AbstractInvoker<ChannelHandlerContext> {
         ChannelFuture channelFuture = channel.writeAndFlush(xtRequest);
     }
 
-    public Channel channel(){
+    public Channel channel() {
         return pipe.channel();
     }
 
-    public ChannelHandlerContext channelHandlerContext(){
+    public ChannelHandlerContext channelHandlerContext() {
         return pipe;
     }
 

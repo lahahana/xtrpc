@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Dispatch response to specific receiver
- * */
+ */
 public final class XTResponseDispatcher {
 
     private static final Logger logger = LoggerFactory.getLogger(XTResponseDispatcher.class);
@@ -25,9 +25,9 @@ public final class XTResponseDispatcher {
     }
 
     public static XTResponseDispatcher getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             synchronized (XTResponseDispatcher.class) {
-                if(instance == null) {
+                if (instance == null) {
                     instance = new XTResponseDispatcher();
                 }
             }

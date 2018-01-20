@@ -10,7 +10,7 @@ public class Constraints {
 
     public static final String REFERENCE = "reference";
 
-    public static final String  REGISTRY= "registry";
+    public static final String REGISTRY = "registry";
 
     public static final int STATUS_OK = 200;
 

@@ -2,20 +2,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>xtrpc-parent</artifactId>
         <groupId>com.github.lahahana</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
     <artifactId>xtrpc-rpc</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
+    <description>The server-side module of xtrpc</description>
 
     <dependencies>
         <dependency>
             <groupId>com.github.lahahana</groupId>
             <artifactId>xtrpc-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>io.undertow</groupId>

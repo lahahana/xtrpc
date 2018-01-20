@@ -5,32 +5,23 @@ import com.github.lahahana.xtrpc.common.config.api.Protocol;
 import com.github.lahahana.xtrpc.common.config.api.Registry;
 import com.github.lahahana.xtrpc.common.config.api.ServiceConfig;
 import com.github.lahahana.xtrpc.common.constant.Constraints;
-import com.github.lahahana.xtrpc.common.domain.Service;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.config.TypedStringValue;
-import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.support.ManagedMap;
 import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.HashSet;
-import java.util.Set;
-
 @AllArgsConstructor
 public class XTBeanDefinitionParser implements BeanDefinitionParser {
 
-    private Class<?>  beanClazz;
+    private Class<?> beanClazz;
 
     @Override
     public BeanDefinition parse(Element element, ParserContext parserContext) {
@@ -83,7 +74,7 @@ public class XTBeanDefinitionParser implements BeanDefinitionParser {
                 parseProperties(element.getChildNodes(), classDefinition);
                 beanDefinition.getPropertyValues().addPropertyValue("ref", new BeanDefinitionHolder(classDefinition, id + "Impl"));
             }
-        } else if(Registry.class.equals(beanClazz)) {
+        } else if (Registry.class.equals(beanClazz)) {
             beanDefinition.getPropertyValues().addPropertyValue("address", element.getAttribute("address"));
         }
         //TO-DO add method definition

@@ -7,58 +7,60 @@
     <artifactId>xtrpc-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <name>${project.artifactId}</name>
+    <description>The parent project of xtrpc</description>
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
 
     <modules>
         <module>xtrpc-common</module>
         <module>xtrpc-rpc</module>
         <module>xtrpc-client</module>
-        <module>xtrpc-test</module>
+        <module>xtrpc-all</module>
     </modules>
 
     <properties>
-        <protobuf_version>3.4.0</protobuf_version>
-        <netty_version>4.1.17.Final</netty_version>
-        <lombok_version>1.16.18</lombok_version>
         <slf4j_version>1.7.25</slf4j_version>
+        <netty_version>4.1.17.Final</netty_version>
+        <kryo_version>4.0.1</kryo_version>
+        <lombok_version>1.16.18</lombok_version>
         <guava_version>23.4-jre</guava_version>
         <spring_version>4.3.12.RELEASE</spring_version>
-        <junit_version>4.12</junit_version>
         <redis_version>2.9.0</redis_version>
         <undertow_version>1.4.21.Final</undertow_version>
-    </properties>
+        <!-- test libs -->
+        <junit_version>4.12</junit_version>
+        <easymock_version>3.4</easymock_version>
+        <jmockit_version>1.33</jmockit_version>
 
-    <developers>
-        <developer>
-            <name>Dai, Lebing</name>
-            <email>dailebing666@gmail.com</email>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-    </developers>
+        <project.build.sourceEncoding>${file_encoding}</project.build.sourceEncoding>
+        <java_source_version>1.8</java_source_version>
+        <java_target_version>1.8</java_target_version>
+        <file_encoding>UTF-8</file_encoding>
+    </properties>
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>com.google.protobuf</groupId>
-                <artifactId>protobuf-java</artifactId>
-                <version>${protobuf_version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-all</artifactId>
-                <version>${netty_version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j_version}</version>
             </dependency>
             <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava_version}</version>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${netty_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.esotericsoftware</groupId>
+                <artifactId>kryo</artifactId>
+                <version>${kryo_version}</version>
             </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>
@@ -66,14 +68,16 @@
                 <version>${lombok_version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>${spring_version}</version>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava_version}</version>
             </dependency>
             <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit_version}}</version>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>${spring_version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>redis.clients</groupId>
@@ -85,9 +89,86 @@
                 <artifactId>undertow-servlet</artifactId>
                 <version>${undertow_version}</version>
             </dependency>
-
-
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit_version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>${easymock_version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jmockit</groupId>
+                <artifactId>jmockit</artifactId>
+                <version>1.33</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jmockit</groupId>
+            <artifactId>jmockit</artifactId>
+        </dependency>
+    </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <fork>true</fork>
+                    <source>${java_source_version}</source>
+                    <target>${java_target_version}</target>
+                    <encoding>${file_encoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <addMavenDescriptor>true</addMavenDescriptor>
+                        <index>true</index>
+                        <manifest>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <scm>
+        <url>https://github.com/lahahana/xtrpc</url>
+        <connection>https://github.com/lahahana/xtrpc.git</connection>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>Dai, Lebing</name>
+            <email>dailebing666@gmail.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
 
 </project>

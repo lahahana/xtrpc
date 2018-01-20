@@ -24,7 +24,7 @@ public class CustomThreadFactory implements ThreadFactory {
     @Override
     public Thread newThread(Runnable r) {
         int seq = counter.getAndIncrement();
-        Thread t = new Thread(r,threadFactoryName+"-"+seq);
+        Thread t = new Thread(r, threadFactoryName + "-" + seq);
         t.setDaemon(daemon);
         return t;
     }

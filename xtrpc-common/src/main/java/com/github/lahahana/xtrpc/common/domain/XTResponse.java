@@ -1,9 +1,7 @@
 package com.github.lahahana.xtrpc.common.domain;
 
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.io.Serializable;
 

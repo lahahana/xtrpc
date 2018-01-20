@@ -13,7 +13,7 @@ public class FunctionResponseInboundHandler extends SimpleChannelInboundHandler<
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FunctionResponse msg) throws Exception {
-        if(msg.getType() == MessageConstraints.FUNCTION_HEART_BEAT_HEAD) {
+        if (msg.getType() == MessageConstraints.FUNCTION_HEART_BEAT_HEAD) {
             logger.debug("receive heart beat response: FunctionResponse={}", msg);
             //mark target channel is healthy
         }

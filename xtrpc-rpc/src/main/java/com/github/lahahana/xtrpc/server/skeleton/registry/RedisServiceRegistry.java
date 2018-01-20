@@ -26,8 +26,8 @@ public class RedisServiceRegistry implements ServiceRegistry {
         jedis = new Jedis(registry.getHost(), registry.getPort());
     }
 
-    public void close(){
-        if(jedis.isConnected()) {
+    public void close() {
+        if (jedis.isConnected()) {
             jedis.close();
         }
     }
@@ -47,11 +47,11 @@ public class RedisServiceRegistry implements ServiceRegistry {
         String registryInfo = redisRegisterInfoBuilder.toString();
         boolean opStatus = false;
         try {
-            opStatus = jedis.sadd(service.getServiceInterface(),registryInfo) == 1 ? true : false;
-            if(opStatus) {
-                logger.info("service={} register to registry={}",registryInfo, registry);
-            }else {
-                logger.info("service={} already register to registry={}",registryInfo, registry);
+            opStatus = jedis.sadd(service.getServiceInterface(), registryInfo) == 1 ? true : false;
+            if (opStatus) {
+                logger.info("service={} register to registry={}", registryInfo, registry);
+            } else {
+                logger.info("service={} already register to registry={}", registryInfo, registry);
             }
         } catch (Exception e) {
             throw new ServiceRegisterException(e);
@@ -59,7 +59,7 @@ public class RedisServiceRegistry implements ServiceRegistry {
     }
 
     @Override
-    public boolean unregister(Service service)  {
+    public boolean unregister(Service service) {
         StringBuilder redisRegisterInfoBuilder = new StringBuilder();
         redisRegisterInfoBuilder.append(service.getServiceInterface());
         redisRegisterInfoBuilder.append(Constraints.DELIMITER_REDIS);
@@ -73,11 +73,11 @@ public class RedisServiceRegistry implements ServiceRegistry {
         String registryInfo = redisRegisterInfoBuilder.toString();
         boolean opStatus = false;
         try {
-            opStatus = jedis.srem(service.getServiceInterface(),registryInfo) == 1 ? true : false;
-            if(opStatus) {
-                logger.info("unregister service={}",service);
-            }else {
-                logger.info("service={} already unRegister",service);
+            opStatus = jedis.srem(service.getServiceInterface(), registryInfo) == 1 ? true : false;
+            if (opStatus) {
+                logger.info("unregister service={}", service);
+            } else {
+                logger.info("service={} already unRegister", service);
             }
         } catch (Exception e) {
             logger.error("Fail to unregister:{} ", service, e);

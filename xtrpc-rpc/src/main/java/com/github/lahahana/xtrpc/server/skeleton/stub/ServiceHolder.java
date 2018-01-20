@@ -27,7 +27,7 @@ public class ServiceHolder {
         serviceMap.put(interfaceName, service);
     }
 
-    public Object getService(String interfaceName){
+    public Object getService(String interfaceName) {
         return serviceMap.get(interfaceName);
     }
 }

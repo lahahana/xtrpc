@@ -1,9 +1,6 @@
 package com.github.lahahana.xtrpc.common.config.api;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public class Protocol {
@@ -16,7 +13,7 @@ public class Protocol {
 
     private final int port;
 
-    public Protocol(){
+    public Protocol() {
         this("xt", "netty", "kryo", 8088);
     }
 

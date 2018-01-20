@@ -20,7 +20,8 @@ public class ServiceHolder implements Holder<Service> {
 
     private Map<String, List<Service>> serviceMap = new HashMap<>();
 
-    private ServiceHolder(){}
+    private ServiceHolder() {
+    }
 
     public static ServiceHolder getInstance() {
         if (instance == null) {
@@ -35,7 +36,7 @@ public class ServiceHolder implements Holder<Service> {
 
     @Override
     public synchronized Service hold(Service service) {
-        logger.debug("hold service:{}",service);
+        logger.debug("hold service:{}", service);
         List<Service> servicesOfInterface = serviceMap.get(service.getServiceInterface());
         if (servicesOfInterface == null) {
             servicesOfInterface = new ArrayList<>();
@@ -47,7 +48,7 @@ public class ServiceHolder implements Holder<Service> {
 
     @Override
     public synchronized void holdAll(List<Service> services) {
-        logger.debug("hold services:{}",services);
+        logger.debug("hold services:{}", services);
         services.stream().forEach((service -> {
             List<Service> servicesOfInterface = serviceMap.get(service.getServiceInterface());
             if (servicesOfInterface == null) {
@@ -60,12 +61,12 @@ public class ServiceHolder implements Holder<Service> {
 
     @Override
     public synchronized void unhold(Service service) {
-        logger.debug("unhold service:{}",service);
+        logger.debug("unhold service:{}", service);
         //To-DO
     }
 
     public synchronized void holdServices(String serviceInterface, List<Service> services) {
-        logger.debug("hold services: interface={}, size={}",serviceInterface, services.size());
+        logger.debug("hold services: interface={}, size={}", serviceInterface, services.size());
         List<Service> servicesOfInterface = serviceMap.get(serviceInterface);
         if (servicesOfInterface == null) {
             servicesOfInterface = new ArrayList<>();
@@ -84,7 +85,7 @@ public class ServiceHolder implements Holder<Service> {
     }
 
     public synchronized void markServiceAsUnavailable(String interfaceName, String address) {
-        logger.warn("mark service as unavailable:interface={}, address={}",interfaceName, address);
+        logger.warn("mark service as unavailable:interface={}, address={}", interfaceName, address);
         serviceMap.get(interfaceName)
                 .stream()
                 .filter((s) -> NetworkUtil.assembleAddress(s.getHost(), s.getPort()).equals(address))

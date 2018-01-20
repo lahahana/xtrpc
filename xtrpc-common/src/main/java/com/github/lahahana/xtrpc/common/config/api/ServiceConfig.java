@@ -16,5 +16,4 @@ public class ServiceConfig {
     private Object ref;
 
 
-
 }

@@ -19,14 +19,14 @@ public class DirectRefService implements RefService {
 
     /**
      * @return host of ref service
-     * */
+     */
     public String getHost() {
         return inetSocketAddress.getHostName();
     }
 
     /**
      * @return port of ref service
-     * */
+     */
     public int getPort() {
         return inetSocketAddress.getPort();
     }
